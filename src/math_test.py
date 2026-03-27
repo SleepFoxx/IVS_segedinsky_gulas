@@ -7,16 +7,45 @@ class TestMathLib(unittest.TestCase):
         self.assertEqual(ml.add(-1, 1), 0)
         self.assertEqual(ml.add(0, 0), 0)
         self.assertEqual(ml.add(-5, -5), -10)
+    def test_add_list(self):
+        self.assertEqual(ml.add_list([1, 2, 3]), 6)
+        self.assertEqual(ml.add_list([-1, 1, 0]), 0)
+        self.assertEqual(ml.add_list([0, 0, 0]), 0)
+        with self.assertRaises(ValueError):
+            ml.add_list([])
+        with self.assertRaises(ValueError):
+            ml.add_list([1, 'a', 3])
+        
     def test_subtract(self):
         self.assertEqual(ml.sub(5, 3), 2)
         self.assertEqual(ml.sub(0, 1), -1)
         self.assertEqual(ml.sub(-1, -1), 0)
         self.assertEqual(ml.sub(-5, 5), -10)
+    
+    def test_sub_list(self):
+        self.assertEqual(ml.sub_list([10, 2, 3]), 5)
+        self.assertEqual(ml.sub_list([-1, 1, 0]), -2)
+        self.assertEqual(ml.sub_list([0, 0, 0]), 0)
+        with self.assertRaises(ValueError):
+            ml.sub_list([])
+        with self.assertRaises(ValueError):
+            ml.sub_list([1, 'a', 3])
+        
     def test_multiply(self):
         self.assertEqual(ml.mul(2, 3), 6)
         self.assertEqual(ml.mul(-1, 1), -1)
         self.assertEqual(ml.mul(0, 5), 0)
         self.assertEqual(ml.mul(-5, -5), 25)
+
+    def test_mul_list(self):
+        self.assertEqual(ml.mul_list([1, 2, 3]), 6)
+        self.assertEqual(ml.mul_list([-1, 1, 0]), 0)
+        self.assertEqual(ml.mul_list([1, 1, 1]), 1)
+        with self.assertRaises(ValueError):
+            ml.mul_list([])
+        with self.assertRaises(ValueError):
+            ml.mul_list([1, 'a', 3])
+    
     def test_divide(self):
         self.assertEqual(ml.div(6, 3), 2)
         self.assertEqual(ml.div(-1, 1), -1)
