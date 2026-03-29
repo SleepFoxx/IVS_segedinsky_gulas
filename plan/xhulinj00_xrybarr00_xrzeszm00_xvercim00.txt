@@ -1,0 +1,36 @@
+1. Členovia tímu
+	Vedúci: Jakub Hulín, xhulinj00
+	Člen 2: Ronnie Rybárik, xrybarr00
+	Člen 3: Marek Rzeszoto, xrzeszm00
+	Člen 4: Michal Verčík, xvercim00
+
+2. Správa verzií a repozitár
+	Zvolený systém: GIT
+	Hosting: GitHub
+	Adresa repozitára: https://github.com/SleepFoxx/IVS_segedinsky_gulas
+	Sprístupnenie: Pridaný používateľ ivskontrola (ivs.kontrola@gmail.com) ako contributor s právami na čítanie.
+
+3. Komunikačné kanály a pravidlá
+	Primárny kanál: Discord
+	Sekundárny kanál: Instagram
+
+Pravidlá komunikácie:
+	Kontrola Discordu aspoň 1x denne.
+	Každý týždeň prebehne krátky online sync o stave projektu.
+	Všetky zmeny v repozitári budú oznamované cez Discord a prostredníctvom jasných pull requestov, ktoré budú schvaľované vedúcim.
+
+4. Rozdelenie úloh (predbežné)
+	xhulinj00 (Vedúci): Matematická knižnica, profiling,  koordinácia tímu, code review.
+	xrybarr00: Integrácia matematickej knižnice, profiling, implementácia unit testov.
+	xrzeszm00: Návrh a implementácia GUI, profiling, "Makefile", Mockup ďalšej verzie.
+	xvercim00: Inštalátor/odinštalátor, používateľská príručka, správa dokumentácie.
+(Poznámka: Role sa môžu počas vytvárania projektu meniť).
+
+5. Stanovené termíny
+	26.03.2026: Hotové rozhranie matematickej knižnice a základné testy.
+	05.04.2026: Funkčné jadro kalkulačky + základná kostra GUI.
+	12.04.2026: Dokončenie matematických funkcií, prepojenie s GUI, prvá verzia Makefile.
+	19.04.2026: Hotový profiling a program stddev, generovanie dokumentácie.
+	25.04.2026: Vytvorenie inštalátora, finálna revízia manual.pdf a mockupu.
+	28.04.2026: Interné testovanie na čistom virtuálnom stroji, finálne "balenie".
+	30.04.2026: Odovzdanie projektu.
