@@ -50,6 +50,9 @@ class TestMathLib(unittest.TestCase):
         self.assertEqual(ml.div(6, 3), 2)
         self.assertEqual(ml.div(-1, 1), -1)
         self.assertEqual(ml.div(5, 2), 2.5)
+        self.assertEqual(ml.div(0, 5), 0)
+        self.assertEqual(ml.div(-5, -5), 1)
+        self.assertEqual(ml.div(1,3), 0.333333333, places=9)
         with self.assertRaises(ZeroDivisionError):
             ml.div(5, 0)
     def test_power(self):
