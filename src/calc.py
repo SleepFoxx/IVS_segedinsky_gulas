@@ -64,19 +64,57 @@ class Calculator:
             btnFrame.columnconfigure(i, weight=1, uniform="col")
         for i in range(6):
             btnFrame.rowconfigure(i, weight=1, uniform="row")
-        
+
     def _setup_keybinds(self):
-        for i in range(10): self.root.bind(str(i), lambda e, val=i: self.on_click(str(val)))
+        # Nums
+        for i in range(10): 
+            self.root.bind(str(i), lambda e, val=i: self.on_click(str(val)))
+            self.root.bind(f"<KP_{i}>", lambda e, val=i: self.on_click(str(val)))
+
+        # Math
+        self.root.bind("+", lambda e: self.on_click("+"))
+        self.root.bind("<KP_Add>", lambda e: self.on_click("+"))
+        
+        self.root.bind("-", lambda e: self.on_click("-"))
+        self.root.bind("<KP_Subtract>", lambda e: self.on_click("-"))
+        
+        self.root.bind("*", lambda e: self.on_click("x"))
+        self.root.bind("<KP_Multiply>", lambda e: self.on_click("x"))
+        
+        self.root.bind("/", lambda e: self.on_click("/"))
+        self.root.bind("<KP_Divide>", lambda e: self.on_click("/"))
+
+        # Comma
+        self.root.bind(".", lambda e: self.on_click(","))
+        self.root.bind(",", lambda e: self.on_click(","))
+        self.root.bind("<KP_Separator>", lambda e: self.on_click(","))
+        self.root.bind("<KP_Decimal>", lambda e: self.on_click(","))
+
+        # Enter/Equal
         self.root.bind("<Return>", lambda e: self.on_click("Enter"))
+        self.root.bind("<KP_Enter>", lambda e: self.on_click("Enter"))
+
+        # Remove
         self.root.bind("<BackSpace>", lambda e: self.on_click("DEL"))
         self.root.bind("<Escape>", lambda e: self.on_click("AC"))
+        self.root.bind("<Delete>", lambda e: self.on_click("AC"))
 
     def on_click(self, char):
         if char == "AC": 
             self.expression = ""
         elif char == "DEL": 
             self.expression = self.expression[:-1]
-        else: 
+        elif char == "Enter":
+            try:
+                temp_expr = self.expression.replace('x', '*').replace(',', '.')
+                result = eval(temp_expr)
+                if result == int(result):
+                    self.expression = str(int(result))
+                else:
+                    self.expression = str(round(result, 4)).replace('.', ',')
+            except Exception:
+                self.expression = "Error"
+        else:
             self.expression += str(char)
         
         self.displayVar.set(self.expression)
