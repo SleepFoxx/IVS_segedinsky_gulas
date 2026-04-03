@@ -1,51 +1,163 @@
-def add(a, b):
-    return a + b
-def add_list(numbers):
+"""
+@file math_lib.py
+@author Jakub Hulín (xhulinj00)
+@brief A simple math library that provides basic arithmetic operations.
+@details This library includes functions for addition, subtraction, multiplication, division, exponentiation, square root and nth root. It can handle integers, floats, negative numbers... The functions are designed to be simple and easy to use, with error handling for invalid inputs.
+@version 0.3
+@date 2026-04-03
+
+@section LICENSE
+This software is licensed under the GNU GPL v3 license.
+"""
+
+
+
+
+
+
+def add(a: int | float, b: int | float) -> int | float:
+    """
+    @brief Adds two numbers together.
+
+    This function takes two numbers, no matter their type and returns their sum. It can handle integers, floats, negative numbers...
+
+    @param a First number
+    @param b Second number
+    @return The sum of a and b
+    """
+    try:
+        a = float(a)
+        b = float(b)
+        return a + b
+    except (TypeError, ValueError):
+        raise TypeError("Both a and b must be numbers")
+
+
+def add_list(numbers: list[int | float]) -> int | float:
+    """
+    @brief Adds a list of numbers together
+
+    This function takes a list of numbers and returns their sum. It can handle integers, floats, negative numbers... The list cannot be empty and all elements must be numbers.
+    @param numbers List of numbers to add
+    @return The sum of all numbers in the list
+    """
     total = 0
     if not numbers:
         raise ValueError("The list cannot be empty")
     for num in numbers:
         if not isinstance(num, (int, float)):
-            raise ValueError("All elements must be numbers")
+            raise TypeError("All elements must be numbers")
         total += num
     return total
-def sub(a, b):
-    return a - b
-
-def sub_list(numbers):
+def sub(a: int | float, b: int | float) -> int | float:
+    """
+    @brief Subtracts two numbers.
+    This function takes two numbers, no matter their type and returns their difference. It can handle integers, floats, negative numbers...
+    @param a First number
+    @param b Second number
+    @return The difference of a and b
+    """
+    try:
+        a = float(a)
+        b = float(b)
+        return a - b
+    except (TypeError, ValueError):
+        raise TypeError("Both a and b must be numbers")
+    
+def sub_list(numbers: list[int | float]) -> int | float:
+    """
+    @brief Subtracts a list of numbers together
+    This function takes a list of numbers and returns their difference. It can handle integers, floats, negative numbers... The list cannot be empty and all elements must be numbers.
+    @param numbers List of numbers to subtract
+    @return The difference of all numbers in the list
+    """
     if not numbers:
         raise ValueError("The list cannot be empty")
     total = numbers[0]
     for num in numbers[1:]:
         if not isinstance(num, (int, float)):
-            raise ValueError("All elements must be a number")
+            raise TypeError("All elements must be a number")
         total -= num
     return total
 
-def mul(a, b):
-    return a * b
+def mul(a: int | float, b: int | float) -> int | float:
+    """
+    @brief Multiplies two numbers together.
+    This function takes two numbers, no matter their type and returns their product. It can handle integers, floats, negative numbers...
+    @param a First number
+    @param b Second number
+    @return The product of a and b
+    """
+    try:
+        a = float(a)
+        b = float(b)
+        return a * b
+    except (TypeError, ValueError):
+        raise TypeError("Both a and b must be numbers")
 
-def mul_list(numbers):
+def mul_list(numbers: list[int | float]) -> int | float:
+    """
+    @brief Multiplies a list of numbers together
+    This function takes a list of numbers and returns their product. It can handle integers, floats, negative numbers... The list cannot be empty and all elements must be numbers.
+    @param numbers List of numbers to multiply
+    @return The product of all numbers in the list
+    """
     if not numbers:
         raise ValueError("The list cannot be empty")
     total = numbers[0]
     for num in numbers[1:]:
         if not isinstance(num, (int, float)):
-            raise ValueError("All elements must be a number")
+            raise TypeError("All elements must be a number")
         total *= num
     return total
 
-def div(a, b):
-    if b == 0:
-        raise ZeroDivisionError("Cannot divide by zero")
-    return a / b
-def pow(a, b):
+def div(a: int | float, b: int | float) -> int | float:
+    try:
+        a = float(a)
+        b = float(b)
+        if b == 0:
+            raise ZeroDivisionError("Cannot divide by zero")
+        return a / b
+    except (TypeError, ValueError):
+        raise TypeError("Both a and b must be numbers")
+
+def pow(a: int | float, b: int) -> int:
+    """
+    @brief Raises a number to a power.
+    This function takes a number and an integer exponent and returns the result of raising the number to that exponent. It can handle integers, floats, negative numbers... The exponent must be an integer.
+    @param a The base number
+    @param b The exponent, must be a positive integer
+    @return The result of a raised to the power of b
+    """
+    if(not isinstance(b, int) or not isinstance(a, (int, float))):
+        raise TypeError("a must be a number and b must be an integer")
+    if(b < 0):
+        raise ValueError("Exponent must be a positive integer")
     return a ** b
-def sqrt(a):
+    
+
+def sqrt(a: int | float) -> int | float:
+    """
+    @brief Takes the square root of a number.
+    This function takes a number and returns its square root. It can handle integers, floats... The number must be non-negative.
+    @param a The number to take the square root of, must be non-negative
+    @return The square root of a
+    """
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
     if a < 0:
         raise ValueError("Cannot take square root of a negative number")
     return a ** 0.5
-def root(a, n):
+def root(a: int | float, n: int) -> int | float:
+    """
+    @brief Takes the nth root of a number.
+    This function takes a number and an integer n and returns the nth root of that number. It can handle integers, floats... The number must be non-negative if n is even.
+    @param a The number to take the nth root of, must be non-negative if n is even
+    @param n The degree of the root, must be a positive integer
+    @return The nth root of a
+    """
+    if not isinstance(n, int) or not isinstance(a, (int, float)):
+        raise TypeError("a must be a number and n must be an integer")
     if a < 0 and n % 2 == 0:
         raise ValueError("Cannot take even root of a negative number")
     return a ** (1/n)
