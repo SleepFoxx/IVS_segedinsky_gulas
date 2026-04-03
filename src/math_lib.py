@@ -158,6 +158,48 @@ def root(a: int | float, n: int) -> int | float:
     """
     if not isinstance(n, int) or not isinstance(a, (int, float)):
         raise TypeError("a must be a number and n must be an integer")
+    if n <= 0:
+        raise ValueError("n must be a positive integer")
     if a < 0 and n % 2 == 0:
         raise ValueError("Cannot take even root of a negative number")
     return a ** (1/n)
+
+def factorial(a: int) -> int:
+    """
+    @brief Takes the factorial of a number.
+    This function takes a non-negative integer and returns its factorial. The factorial of a non-negative integer n is the product of all positive integers less than or equal to n. It can handle integers... The number must be a non-negative integer.
+    @param a The number to take the factorial of, must be a non-negative integer
+    @return The factorial of a
+    """
+    if isinstance(a, float):
+        raise ValueError("a must be an integer")
+    if not isinstance(a, int):
+        raise TypeError("a must be an integer")
+    if a < 0:
+        raise ValueError("Cannot take factorial of a negative number")
+    if a == 0 or a == 1:
+        return 1
+    return a * factorial(a - 1)
+
+def abs(a: int | float) -> int | float:
+    """
+    @brief Takes the absolute value of a number.
+    This function takes a number and returns its absolute value. It can handle integers, floats... The absolute value of a number is the non-negative value of that number without regard to its sign.
+    @param a The number to take the absolute value of
+    @return The absolute value of a
+    """
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
+    return a if a >= 0 else -a
+
+def negate(a: int | float) -> int | float:
+    """
+    @brief Negates a number.
+    This function takes a number and returns its negation. It can handle integers, floats... The negation of a number is the number with the opposite sign.
+    @param a The number to negate
+    @return The negation of a
+    """
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
+    return -a
+    
