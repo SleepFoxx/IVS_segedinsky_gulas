@@ -22,6 +22,7 @@ def main():
         variance_sum = ml.add(variance_sum, ml.pow(num - avg, 2))
     deviation = ml.sqrt(ml.div(variance_sum, n - 1))
 
+
     print(deviation)
 
 if __name__ == "__main__":
