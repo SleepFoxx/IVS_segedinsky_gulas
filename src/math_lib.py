@@ -45,7 +45,11 @@ def add_list(numbers: list[int | float]) -> int | float:
     if not numbers:
         raise ValueError("The list cannot be empty")
     for num in numbers:
-        if not isinstance(num, (int, float)):
+        #if not isinstance(num, (int, float)):
+            #raise TypeError("All elements must be numbers")
+        try:
+            num = float(num)
+        except (TypeError, ValueError):
             raise TypeError("All elements must be numbers")
         total += num
     return total
@@ -129,7 +133,12 @@ def pow(a: int | float, b: int) -> int:
     @param b The exponent, must be a positive integer
     @return The result of a raised to the power of b
     """
-    if(not isinstance(b, int) or not isinstance(a, (int, float))):
+    #if(not isinstance(b, int) or not isinstance(a, (int, float))):
+    #    raise TypeError("a must be a number and b must be an integer")
+    try:
+        a = float(a)
+        b = int(b)
+    except (TypeError, ValueError):
         raise TypeError("a must be a number and b must be an integer")
     if(b < 0):
         raise ValueError("Exponent must be a positive integer")
