@@ -337,14 +337,14 @@ class TestMathLib(unittest.TestCase):
         non-numeric argument raises TypeError.
         """
         self.assertAlmostEqual(ml.cos(0), 1.0, places=9)
-        self.assertAlmostEqual(ml.cos(30), 0.866025403, places=9)
+        self.assertAlmostEqual(ml.cos(30), 0.86602540378, places=9)
         self.assertAlmostEqual(ml.cos(45), 0.707106781, places=9)
         self.assertAlmostEqual(ml.cos(60), 0.5, places=9)
         self.assertAlmostEqual(ml.cos(90), 0.0, places=9)
         self.assertAlmostEqual(ml.cos(180), -1.0, places=9)
         self.assertAlmostEqual(ml.cos(270), 0.0, places=9)
         self.assertAlmostEqual(ml.cos(360), 1.0, places=9)
-        self.assertAlmostEqual(ml.cos(-30), 0.866025403, places=9)
+        self.assertAlmostEqual(ml.cos(-30), 0.866025404, places=9)
         with self.assertRaises(TypeError):
             ml.cos('a')
         
