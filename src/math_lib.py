@@ -187,7 +187,7 @@ def sqrt(a: int | float) -> int | float:
     
 def root(a: int | float, n: int) -> int | float:
     """
-    @brief Takes the nth root of a number.
+    @brief Takes the nth root of a number with Newton's approximation method.
     This function takes a number and an integer n and returns the nth root of that number. It can handle integers, floats... The number must be non-negative if n is even.
     @param a The number to take the nth root of, must be non-negative if n is even
     @param n The degree of the root, must be a positive integer
@@ -281,6 +281,13 @@ def percent(a: int | float, b: int | float) -> int | float:
     return (b / 100) * a
 
 def sin(a: int | float) -> float:
+    """
+    @brief Calculates the sine of an angle in degrees.
+    This function takes an angle in degrees and returns its sine. It can handle integers, floats... The sine of an angle is a trigonometric function that gives the ratio of the length of the side opposite the angle to the length of the hypotenuse in a right triangle.
+    @param a The angle in degrees to calculate the sine of
+    @return The sine of the angle
+    """
+
     pi = 3.141592653589793
     a_rad = mul(a, div(pi, 180))
     
@@ -296,4 +303,28 @@ def sin(a: int | float) -> float:
     return float(sin_a)
 
 
+def cos(a: int | float) -> float:
+    """
+    @brief Calculates the cosine of an angle in degrees.
+    This function takes an angle in degrees and returns its cosine. It can handle integers, floats... The cosine of an angle is a trigonometric function that gives the ratio of the length of the adjacent side to the length of the hypotenuse in a right triangle.
+    @param a The angle in degrees to calculate the cosine of
+    @return The cosine of the angle
+    """
+
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
     
+    pi = 3.141592653589793
+    
+    a_rad = mul(a, div(pi, 180))
+    a_rad = a_rad % (mul(2, pi))
+
+    term = 1
+    cos_a = 1
+    for i in range(1, 15):
+        numer = mul(-1, mul(a_rad, a_rad))
+        denom = mul(sub(mul(2, i), 1), mul(2, i))
+        term *= div(numer, denom)
+
+        cos_a += term
+    return float(cos_a)
