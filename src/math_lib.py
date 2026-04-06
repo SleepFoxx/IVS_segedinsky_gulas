@@ -328,3 +328,20 @@ def cos(a: int | float) -> float:
 
         cos_a += term
     return float(cos_a)
+
+
+def tg(a: int | float) -> float:
+    """
+    @brief Calculates the tangent of an angle in degrees.
+    This function takes an angle in degrees and returns its tangent. It can handle integers, floats... The tangent of an angle is a trigonometric function that gives the ratio of the sine of the angle to the cosine of the angle.
+    @param a The angle in degrees to calculate the tangent of
+    @return The tangent of the angle
+    """
+    
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
+    epsilon = 1e-10
+    cos_a = cos(a)
+    if abs(cos_a) < epsilon:
+        raise ValueError("Tangent is undefined for this angle")
+    return div(sin(a), cos_a)
