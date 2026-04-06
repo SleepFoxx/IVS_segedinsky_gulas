@@ -210,7 +210,15 @@ def root(a: int | float, n: int) -> int | float:
         a = -a
     guess = a / n if a > 1.0 else 1.0
 
-    #while True:
+    while True:
+        guess_pow_minus_1 = pow(guess, n-1)
+        next_guess = ((n-1) * guess + a / guess_pow_minus_1) / n
+        diff = guess - next_guess
+        if(diff if diff > 0 else -diff) < 1e-10:
+            break
+        guess = next_guess
+    return -guess if is_negative else guess
+
         
 
 def factorial(a: int) -> int:
@@ -269,7 +277,8 @@ def percent(a: int | float, b: int | float) -> int | float:
         raise TypeError("Both a and b must be numbers")
     return (b / 100) * a
 
-#def sin(a: int | float) -> float:
+def sin(a: int | float) -> float:
+    
 
 
     
