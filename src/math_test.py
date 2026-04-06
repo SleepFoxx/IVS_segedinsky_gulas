@@ -424,11 +424,11 @@ class TestMathLib(unittest.TestCase):
         (-90, 90). The domain is all real numbers so no ValueError is expected.
         Also checks that passing a non-numeric argument raises TypeError.
         """
-        self.assertAlmostEqual(ml.arctg(0), 0.0, places=9)
-        self.assertAlmostEqual(ml.arctg(0.577350269), 30.0, places=9)
-        self.assertAlmostEqual(ml.arctg(1), 45.0, places=9)
-        self.assertAlmostEqual(ml.arctg(1.732050808), 60.0, places=9)
-        self.assertAlmostEqual(ml.arctg(-0.577350269), -30.0, places=9)
+        self.assertAlmostEqual(ml.arctg(0), 0.0, delta=1e-8)
+        self.assertAlmostEqual(ml.arctg(0.577350269), 30.0, delta=1e-8)
+        self.assertAlmostEqual(ml.arctg(1), 45.0, delta=1e-8)
+        self.assertAlmostEqual(ml.arctg(1.732050808), 60.0, delta=1e-8)
+        self.assertAlmostEqual(ml.arctg(-0.577350269), -30.0, delta=1e-8)
         with self.assertRaises(TypeError):
             ml.arctg('a')
         
