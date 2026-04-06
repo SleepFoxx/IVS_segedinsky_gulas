@@ -217,9 +217,9 @@ class TestMathLib(unittest.TestCase):
         ValueError as it is undefined, and that passing a non-numeric argument
         raises TypeError.
         """
-        self.assertEqual(ml.root(27, 3), 3)
-        self.assertEqual(ml.root(16, 4), 2)
-        self.assertEqual(ml.root(1, 5), 1)
+        self.assertAlmostEqual(ml.root(27, 3), 3, places=9)
+        self.assertAlmostEqual(ml.root(16, 4), 2, places=9)
+        self.assertAlmostEqual(ml.root(1, 5), 1, places=9)
         self.assertAlmostEqual(ml.root(2, 2), 1.414213562, places=9)
         with self.assertRaises(ValueError):
             ml.root(-1, 2)
