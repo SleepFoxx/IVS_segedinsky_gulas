@@ -3,7 +3,7 @@
 @author Jakub Hulín (xhulinj00)
 @brief A simple math library that provides basic arithmetic operations.
 @details This library includes functions for addition, subtraction, multiplication, division, exponentiation, square root and nth root. It can handle integers, floats, negative numbers... The functions are designed to be simple and easy to use, with error handling for invalid inputs.
-@version 0.3
+@version 0.4
 @date 2026-04-03
 
 @section LICENSE
@@ -116,6 +116,13 @@ def mul_list(numbers: list[int | float]) -> int | float:
     return total
 
 def div(a: int | float, b: int | float) -> int | float:
+    """
+    @brief Divides two numbers.
+    This function takes two numbers, no matter their type and returns their quotient. It can handle integers, floats, negative numbers... The second number cannot be zero.
+    @param a First number
+    @param b Second number, cannot be zero
+    @return The quotient of a and b
+    """
     try:
         a = float(a)
         b = float(b)
@@ -125,6 +132,20 @@ def div(a: int | float, b: int | float) -> int | float:
     except (TypeError, ValueError):
         raise TypeError("Both a and b must be numbers")
 
+def _int_pow(a: int | float, b: int) -> int | float:
+    """
+    @brief Raises a number to an integer power.
+    This function takes a number and an integer exponent and returns the result of raising the number to that exponent. It can handle integers, floats, negative numbers... The exponent must be an integer.
+    @param a The base number
+    @param b The exponent, must be a positive integer
+    @return The result of a raised to the power of b
+    """
+    result = 1
+    for _ in range(b):
+        result *= a
+    return result
+
+
 def pow(a: int | float, b: int) -> int:
     """
     @brief Raises a number to a power.
@@ -133,8 +154,10 @@ def pow(a: int | float, b: int) -> int:
     @param b The exponent, must be a positive integer
     @return The result of a raised to the power of b
     """
-    #if(not isinstance(b, int) or not isinstance(a, (int, float))):
-    #    raise TypeError("a must be a number and b must be an integer")
+    if not isinstance(b, int | float):
+        raise TypeError("b must be numeric")
+    if isinstance(b, float):
+        raise ValueError("b must be an integer")
     try:
         a = float(a)
         b = int(b)
@@ -156,7 +179,18 @@ def sqrt(a: int | float) -> int | float:
         raise TypeError("a must be a number")
     if a < 0:
         raise ValueError("Cannot take square root of a negative number")
-    return a ** 0.5
+    if a == 0 or a == 1:
+        return a
+    
+    guess = a / 2 if a > 1.0 else 1.0
+
+    while True:
+        next_guess = 0.5 * (guess + a / guess)
+        diff = guess - next_guess
+        if(diff if diff > 0 else -diff) < 1e-10:
+            return next_guess
+        guess = next_guess
+    
 def root(a: int | float, n: int) -> int | float:
     """
     @brief Takes the nth root of a number.
@@ -211,4 +245,25 @@ def negate(a: int | float) -> int | float:
     if not isinstance(a, (int, float)):
         raise TypeError("a must be a number")
     return -a
+
+
+def percent(a: int | float, b: int | float) -> int | float:
+    """
+    @brief Calculates the percentage of a number.
+    This function takes two numbers and returns the percentage of the first number that the second number represents. It can handle integers, floats... The second number cannot be zero.
+    @param a Percentage to calculate
+    @param b The number to calculate the percentage of
+    @return The percentage of b that a represents
+    """
+    
+    try:
+        a = float(a)
+        b = float(b)
+    except (TypeError, ValueError):
+        raise TypeError("Both a and b must be numbers")
+    return (b / 100) * a
+
+#def sin(a: int | float) -> float:
+
+
     
