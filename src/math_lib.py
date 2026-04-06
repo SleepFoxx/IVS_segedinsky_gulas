@@ -132,18 +132,7 @@ def div(a: int | float, b: int | float) -> int | float:
     except (TypeError, ValueError):
         raise TypeError("Both a and b must be numbers")
 
-def _int_pow(a: int | float, b: int) -> int | float:
-    """
-    @brief Raises a number to an integer power.
-    This function takes a number and an integer exponent and returns the result of raising the number to that exponent. It can handle integers, floats, negative numbers... The exponent must be an integer.
-    @param a The base number
-    @param b The exponent, must be a positive integer
-    @return The result of a raised to the power of b
-    """
-    result = 1
-    for _ in range(b):
-        result *= a
-    return result
+
 
 
 def pow(a: int | float, b: int) -> int:
@@ -165,7 +154,12 @@ def pow(a: int | float, b: int) -> int:
         raise TypeError("a must be a number and b must be an integer")
     if(b < 0):
         raise ValueError("Exponent must be a positive integer")
-    return a ** b
+    if (b == 0):
+        return 1
+    result = a
+    for i in range(1, b):
+        result *= a
+    return result
     
 
 def sqrt(a: int | float) -> int | float:
@@ -205,7 +199,19 @@ def root(a: int | float, n: int) -> int | float:
         raise ValueError("n must be a positive integer")
     if a < 0 and n % 2 == 0:
         raise ValueError("Cannot take even root of a negative number")
-    return a ** (1/n)
+    if a == 0:
+        return 0
+    if a == 1:
+        return 1
+    
+    is_negative = False
+    if a < 0:
+        is_negative = True
+        a = -a
+    guess = a / n if a > 1.0 else 1.0
+
+    #while True:
+        
 
 def factorial(a: int) -> int:
     """
