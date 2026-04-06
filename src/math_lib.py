@@ -155,7 +155,7 @@ def pow(a: int | float, b: int) -> int:
     if(b < 0):
         raise ValueError("Exponent must be a positive integer")
     if (b == 0):
-        return 1
+        raise ValueError("Exponent cannot be zero")
     result = a
     for i in range(1, b):
         result *= a
@@ -187,7 +187,7 @@ def sqrt(a: int | float) -> int | float:
     
 def root(a: int | float, n: int) -> int | float:
     """
-    @brief Takes the nth root of a number.
+    @brief Takes the nth root of a number with Newton's approximation method.
     This function takes a number and an integer n and returns the nth root of that number. It can handle integers, floats... The number must be non-negative if n is even.
     @param a The number to take the nth root of, must be non-negative if n is even
     @param n The degree of the root, must be a positive integer
@@ -210,7 +210,15 @@ def root(a: int | float, n: int) -> int | float:
         a = -a
     guess = a / n if a > 1.0 else 1.0
 
-    #while True:
+    while True:
+        guess_pow_minus_1 = pow(guess, n-1)
+        next_guess = ((n-1) * guess + a / guess_pow_minus_1) / n
+        diff = guess - next_guess
+        if(diff if diff > 0 else -diff) < 1e-10:
+            break
+        guess = next_guess
+    return -guess if is_negative else guess
+
         
 
 def factorial(a: int) -> int:
@@ -228,7 +236,10 @@ def factorial(a: int) -> int:
         raise ValueError("Cannot take factorial of a negative number")
     if a == 0 or a == 1:
         return 1
-    return a * factorial(a - 1)
+    result = 1
+    for i in range(2, a + 1):
+        result *= i
+    return result
 
 def abs(a: int | float) -> int | float:
     """
@@ -269,7 +280,51 @@ def percent(a: int | float, b: int | float) -> int | float:
         raise TypeError("Both a and b must be numbers")
     return (b / 100) * a
 
-#def sin(a: int | float) -> float:
+def sin(a: int | float) -> float:
+    """
+    @brief Calculates the sine of an angle in degrees.
+    This function takes an angle in degrees and returns its sine. It can handle integers, floats... The sine of an angle is a trigonometric function that gives the ratio of the length of the side opposite the angle to the length of the hypotenuse in a right triangle.
+    @param a The angle in degrees to calculate the sine of
+    @return The sine of the angle
+    """
 
-
+    pi = 3.141592653589793
+    a_rad = mul(a, div(pi, 180))
     
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
+    a_rad = a_rad % (mul(2, pi))
+
+    term = a_rad
+    sin_a = a_rad
+    for i in range(1, 15):
+        term *= div(mul(-1, mul(a_rad, a_rad)), mul(mul(2, i), add(mul(2, i), 1)))
+        sin_a += term
+    return float(sin_a)
+
+
+def cos(a: int | float) -> float:
+    """
+    @brief Calculates the cosine of an angle in degrees.
+    This function takes an angle in degrees and returns its cosine. It can handle integers, floats... The cosine of an angle is a trigonometric function that gives the ratio of the length of the adjacent side to the length of the hypotenuse in a right triangle.
+    @param a The angle in degrees to calculate the cosine of
+    @return The cosine of the angle
+    """
+
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
+    
+    pi = 3.141592653589793
+    
+    a_rad = mul(a, div(pi, 180))
+    a_rad = a_rad % (mul(2, pi))
+
+    term = 1
+    cos_a = 1
+    for i in range(1, 15):
+        numer = mul(-1, mul(a_rad, a_rad))
+        denom = mul(sub(mul(2, i), 1), mul(2, i))
+        term *= div(numer, denom)
+
+        cos_a += term
+    return float(cos_a)
