@@ -10,8 +10,7 @@
 This software is licensed under the GNU GPL v3 license.
 """
 
-
-
+pi = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679
 
 
 
@@ -143,22 +142,20 @@ def pow(a: int | float, b: int) -> int:
     @param b The exponent, must be a positive integer
     @return The result of a raised to the power of b
     """
-    if not isinstance(b, int | float):
-        raise TypeError("b must be numeric")
-    if isinstance(b, float):
-        raise ValueError("b must be an integer")
-    try:
-        a = float(a)
-        b = int(b)
-    except (TypeError, ValueError):
+
+    if type(b) is not int or type(a) not in (int, float):
         raise TypeError("a must be a number and b must be an integer")
-    if(b < 0):
-        raise ValueError("Exponent must be a positive integer")
-    if (b == 0):
-        raise ValueError("Exponent cannot be zero")
-    result = a
-    for i in range(1, b):
-        result *= a
+
+    if(b <= 0):
+        if b < 0:
+            raise ValueError("b must be a positive integer")
+        raise ValueError("b must not be zero")
+    result = 1
+    while b > 0:
+        if b % 2 == 1:
+            result *= a
+        a *= a
+        b //= 2
     return result
     
 
@@ -288,7 +285,6 @@ def sin(a: int | float) -> float:
     @return The sine of the angle
     """
 
-    pi = 3.141592653589793
     a_rad = mul(a, div(pi, 180))
     
     if not isinstance(a, (int, float)):
@@ -313,9 +309,7 @@ def cos(a: int | float) -> float:
 
     if not isinstance(a, (int, float)):
         raise TypeError("a must be a number")
-    
-    pi = 3.141592653589793
-    
+        
     a_rad = mul(a, div(pi, 180))
     a_rad = a_rad % (mul(2, pi))
 
@@ -328,3 +322,63 @@ def cos(a: int | float) -> float:
 
         cos_a += term
     return float(cos_a)
+
+
+def tg(a: int | float) -> float:
+    """
+    @brief Calculates the tangent of an angle in degrees.
+    This function takes an angle in degrees and returns its tangent. It can handle integers, floats... The tangent of an angle is a trigonometric function that gives the ratio of the sine of the angle to the cosine of the angle.
+    @param a The angle in degrees to calculate the tangent of
+    @return The tangent of the angle
+    """
+
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
+    epsilon = 1e-10
+    cos_a = cos(a)
+    if abs(cos_a) < epsilon:
+        raise ValueError("Tangent is undefined for this angle")
+    return div(sin(a), cos_a)
+
+def arctg(a: int | float) -> float:
+    """
+    @brief Calculates the arctangent of a number in degrees using the Taylor series expansion.
+    This function takes a number and returns its arctangent in degrees. It can handle integers, floats... The arctangent of a number is the angle whose tangent is that number. The range of the arctangent function is from -90 to 90 degrees.
+    @param a The number to calculate the arctangent of
+    @return The arctangent of the number in degrees
+    """
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
+    
+    if a == 0:
+        return 0.0
+    if a == 1:
+        return 45.0
+    if a == -1:
+        return -45.0
+
+    invert = False
+    
+    if(abs(a) > 1):
+        a = div(1, a)
+        invert = True
+
+    result = a
+    term = a
+    a_squared = mul(a, a)
+
+    for i in range(1, 200):
+        term *= a_squared
+        denom = add(1, mul(2, i))
+        current_term = div(term, denom)
+
+        if i % 2 == 1:
+            result -= current_term
+        else:
+            result += current_term
+    if invert:
+        res_rad = sub((div(pi, 2) if a > 0 else div(-pi, 2)), result)
+    else:
+        res_rad = result
+    return(mul(res_rad, div(180, pi)))
+    
