@@ -155,7 +155,7 @@ def pow(a: int | float, b: int) -> int:
     if(b < 0):
         raise ValueError("Exponent must be a positive integer")
     if (b == 0):
-        return 1
+        raise ValueError("Exponent cannot be zero")
     result = a
     for i in range(1, b):
         result *= a
@@ -236,7 +236,10 @@ def factorial(a: int) -> int:
         raise ValueError("Cannot take factorial of a negative number")
     if a == 0 or a == 1:
         return 1
-    return a * factorial(a - 1)
+    result = 1
+    for i in range(2, a + 1):
+        result *= i
+    return result
 
 def abs(a: int | float) -> int | float:
     """
@@ -278,7 +281,19 @@ def percent(a: int | float, b: int | float) -> int | float:
     return (b / 100) * a
 
 def sin(a: int | float) -> float:
+    pi = 3.141592653589793
+    a_rad = mul(a, div(pi, 180))
     
+    if not isinstance(a, (int, float)):
+        raise TypeError("a must be a number")
+    a_rad = a_rad % (mul(2, pi))
+
+    term = a_rad
+    sin_a = a_rad
+    for i in range(1, 15):
+        term *= div(mul(-1, mul(a_rad, a_rad)), mul(mul(2, i), add(mul(2, i), 1)))
+        sin_a += term
+    return float(sin_a)
 
 
     
