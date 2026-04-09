@@ -177,9 +177,9 @@ class TestMathLib(unittest.TestCase):
         self.assertEqual(ml.pow(-5, 3), -125)
         with self.assertRaises(ValueError):
             ml.pow(2, -1)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ml.pow(2, -0.5)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(TypeError):
             ml.pow(4, 0.5)
         with self.assertRaises(TypeError):
             ml.pow(1, 'a')
