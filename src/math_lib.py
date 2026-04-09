@@ -403,3 +403,28 @@ def arcsin(a: int | float) -> float:
 
     return arctg(ratio)
 
+
+def arccos(a: int | float) -> float:
+    """
+    @brief Calculates the arccosine of a number in degrees.
+    This function takes a number and returns its arccosine in degrees. It can handle integers, floats... The arccosine of a number is the angle whose cosine is that number. The range of the arccosine function is from 0 to 180 degrees. The input must be in the range from -1 to 1, inclusive. We will use the identity arccos(x) = 90 - arcsin(x) to calculate the arccosine.
+    From the identity arccos(x) = 90 - arcsin(x) we can see that arccos(0) = 90, arccos(1) = 0 and arccos(-1) = 180, so we can handle those cases separately to avoid unnecessary calculations.
+    @param a The number to calculate the arccosine of, must be in the range from -1 to 1, inclusive
+    @return The arccosine of the number in degrees
+    """
+    if not type(a) in (int, float):
+        raise TypeError("a must be a number")
+
+    if a < -1 or a > 1:
+        raise ValueError("arccos is undefined for this value")
+
+    if a == 0:
+        return 90.0
+
+    if a == 1:
+        return 0.0
+
+    if a == -1:
+        return 180.0
+    
+    return sub(90.0, arcsin(a))
