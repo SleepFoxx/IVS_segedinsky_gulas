@@ -338,7 +338,7 @@ def arctg(a: int | float, is_recursive = False) -> float:
     @brief Calculates the arctangent of a number in degrees using the Taylor series expansion.
     This function takes a number and returns its arctangent in degrees. It can handle integers, floats... The arctangent of a number is the angle whose tangent is that number. The range of the arctangent function is from -90 to 90 degrees.
     @param a The number to calculate the arctangent of
-    @return The arctangent of the number in degrees
+    @return The arctangent of the number in degrees when is_recursive is False, otherwise in radians
     """
     if not type(a) in (int, float):
         raise TypeError("a must be a number")
