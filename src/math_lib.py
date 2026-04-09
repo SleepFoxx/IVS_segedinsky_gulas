@@ -2,7 +2,7 @@
 @file math_lib.py
 @author Jakub Hulín (xhulinj00)
 @brief A simple math library that provides basic arithmetic operations.
-@details This library includes functions for addition, subtraction, multiplication, division, exponentiation, square root and nth root. It can handle integers, floats, negative numbers... The functions are designed to be simple and easy to use, with error handling for invalid inputs.
+@details This library includes functions for addition, subtraction, multiplication, division, exponentiation, square root, nth root, arcsine, arccosine, arctangent, sin, cosine and tangent. It can handle integers, floats, negative numbers... The functions are designed to be simple and easy to use, with error handling for invalid inputs.
 @version 0.5
 @date 2026-04-09
 
@@ -24,7 +24,10 @@ def add(a: int | float, b: int | float) -> int | float:
     @param b Second number
     @return The sum of a and b
     """
-    if not type(a) in (int, float) or not type(b) in (int, float):
+    try:
+        a = float(a)
+        b = float(b)
+    except (ValueError, TypeError):
         raise TypeError("Both a and b must be numbers")
     return a + b
 
@@ -67,6 +70,8 @@ def sub_list(numbers: list[int | float]) -> int | float:
     """
     if not numbers:
         raise ValueError("The list cannot be empty")
+    if numbers[0] is not in (int, float):
+        raise TypeError("All elements must be numbers")
     total = numbers[0]
     for num in numbers[1:]:
         if not type(num) in (int, float):
@@ -96,6 +101,8 @@ def mul_list(numbers: list[int | float]) -> int | float:
     """
     if not numbers:
         raise ValueError("The list cannot be empty")
+    if numbers[0] is not in (int, float):
+        raise TypeError("All elements must be numbers")
     total = numbers[0]
     for num in numbers[1:]:
         if not type(num) in (int, float):
@@ -214,7 +221,7 @@ def factorial(a: int) -> int:
     """
     if type(a) is float:
         raise ValueError("a must be an integer")
-    if not isinstance(a, int):
+    if type(a) is not int:
         raise TypeError("a must be an integer")
     if a < 0:
         raise ValueError("Cannot take factorial of a negative number")
@@ -269,10 +276,12 @@ def sin(a: int | float) -> float:
     @return The sine of the angle
     """
 
-    a_rad = mul(a, div(pi, 180))
-    
     if not type(a) in (int, float):
         raise TypeError("a must be a number")
+        
+    a_rad = mul(a, div(pi, 180))
+    
+    
     a_rad = a_rad % (mul(2, pi))
 
     term = a_rad
