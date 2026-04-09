@@ -2,7 +2,7 @@
 @file math_lib.py
 @author Jakub Hulín (xhulinj00)
 @brief A simple math library that provides basic arithmetic operations.
-@details This library includes functions for addition, subtraction, multiplication, division, exponentiation, square root and nth root. It can handle integers, floats, negative numbers... The functions are designed to be simple and easy to use, with error handling for invalid inputs.
+@details This library includes functions for addition, subtraction, multiplication, division, exponentiation, square root, nth root, arcsine, arccosine, arctangent, sin, cosine and tangent. It can handle integers, floats, negative numbers... The functions are designed to be simple and easy to use, with error handling for invalid inputs.
 @version 0.5
 @date 2026-04-09
 
@@ -24,7 +24,10 @@ def add(a: int | float, b: int | float) -> int | float:
     @param b Second number
     @return The sum of a and b
     """
-    if not type(a) in (int, float) or not type(b) in (int, float):
+    try:
+        a = float(a)
+        b = float(b)
+    except (ValueError, TypeError):
         raise TypeError("Both a and b must be numbers")
     return a + b
 
@@ -67,6 +70,8 @@ def sub_list(numbers: list[int | float]) -> int | float:
     """
     if not numbers:
         raise ValueError("The list cannot be empty")
+    if type(numbers[0]) not in (int, float):
+        raise TypeError("All elements must be numbers")
     total = numbers[0]
     for num in numbers[1:]:
         if not type(num) in (int, float):
@@ -96,6 +101,8 @@ def mul_list(numbers: list[int | float]) -> int | float:
     """
     if not numbers:
         raise ValueError("The list cannot be empty")
+    if type(numbers[0]) not in (int, float):
+        raise TypeError("All elements must be numbers")
     total = numbers[0]
     for num in numbers[1:]:
         if not type(num) in (int, float):
@@ -214,7 +221,7 @@ def factorial(a: int) -> int:
     """
     if type(a) is float:
         raise ValueError("a must be an integer")
-    if not isinstance(a, int):
+    if type(a) is not int:
         raise TypeError("a must be an integer")
     if a < 0:
         raise ValueError("Cannot take factorial of a negative number")
@@ -269,10 +276,12 @@ def sin(a: int | float) -> float:
     @return The sine of the angle
     """
 
-    a_rad = mul(a, div(pi, 180))
-    
     if not type(a) in (int, float):
         raise TypeError("a must be a number")
+        
+    a_rad = mul(a, div(pi, 180))
+    
+    
     a_rad = a_rad % (mul(2, pi))
 
     term = a_rad
@@ -324,29 +333,24 @@ def tg(a: int | float) -> float:
         raise ValueError("Tangent is undefined for this angle")
     return div(sin(a), cos_a)
 
-def arctg(a: int | float, is_recursive = False) -> float:
+def _arctg_rad(a: int | float) -> float:
     """
-    @brief Calculates the arctangent of a number in degrees using the Taylor series expansion.
-    This function takes a number and returns its arctangent in degrees. It can handle integers, floats... The arctangent of a number is the angle whose tangent is that number. The range of the arctangent function is from -90 to 90 degrees.
+    @brief Internal helper: calculates the arctangent of a number in radians.
     @param a The number to calculate the arctangent of
-    @return The arctangent of the number in degrees
+    @return The arctangent of the number in radians
     """
-    if not type(a) in (int, float):
-        raise TypeError("a must be a number")
-    
     if a == 0:
         return 0.0
-        
+
     if abs(a - 1.0) < 1e-12:
-        return 45.0 if not is_recursive else div(pi, 4)
+        return div(pi, 4)
 
     if abs(a + 1.0) < 1e-12:
-        return -45.0 if not is_recursive else div(-pi, 4)
-    
+        return div(-pi, 4)
 
-    if(abs(a) > 0.5):
+    if abs(a) > 0.5:
         new_a = div(a, add(1, sqrt(add(1, mul(a, a)))))
-        res_rad = mul(2, arctg(new_a, is_recursive = True))
+        return mul(2, _arctg_rad(new_a))
     else:
         result = a
         term = a
@@ -361,12 +365,20 @@ def arctg(a: int | float, is_recursive = False) -> float:
                 result -= current_term
             else:
                 result += current_term
-        res_rad = result
+        return result
 
-    if(is_recursive):
-        return res_rad
-    else:
-        return(mul(res_rad, div(180, pi)))
+
+def arctg(a: int | float) -> float:
+    """
+    @brief Calculates the arctangent of a number in degrees using the Taylor series expansion.
+    This function takes a number and returns its arctangent in degrees. It can handle integers, floats... The arctangent of a number is the angle whose tangent is that number. The range of the arctangent function is from -90 to 90 degrees.
+    @param a The number to calculate the arctangent of
+    @return The arctangent of the number in degrees
+    """
+    if not type(a) in (int, float):
+        raise TypeError("a must be a number")
+
+    return mul(_arctg_rad(a), div(180, pi))
 
 def arcsin(a: int | float) -> float:
     """
