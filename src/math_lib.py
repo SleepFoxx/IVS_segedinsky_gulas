@@ -2,16 +2,9 @@
 @file math_lib.py
 @author Jakub Hulín (xhulinj00)
 @brief A simple math library that provides basic arithmetic operations.
-<<<<<<< HEAD
-@details This library includes functions for addition, subtraction, multiplication, division, exponentiation, square root and nth root. It can handle integers, floats, negative numbers... The functions are designed to be simple and easy to use, with error handling for invalid inputs.
-@version 0.4
-@date 2026-04-03
-=======
 @details This library includes functions for addition, subtraction, multiplication, division, exponentiation, square root, nth root, arcsine, arccosine, arctangent, sin, cosine and tangent. It can handle integers, floats, negative numbers... The functions are designed to be simple and easy to use, with error handling for invalid inputs.
 @version 0.5
 @date 2026-04-09
->>>>>>> ebd008fdb167b57e488921764b08493a975f6c1a
-
 @section LICENSE
 This software is licensed under the GNU GPL v3 license.
 """
