@@ -80,15 +80,15 @@ class Calculator:
         ]
         
         # Button dimensions
-        BtnWidth, BtnHight = 60, 60
+        btnWidth, btnHight = 60, 60
 
         # Basic buttons layout 
         for (text, r, c, color, hover) in btns:
-            btn = ctk.CTkButton(btnFrame, text=text, fg_color=color, text_color=self.textCol,font=("Comfortaa", 18), corner_radius=12, width=BtnWidth, height=BtnHight,hover_color=hover, command=lambda t=text: self.on_click(t))
+            btn = ctk.CTkButton(btnFrame, text=text, fg_color=color, text_color=self.textCol,font=("Comfortaa", 18), corner_radius=12, width=btnWidth, height=btnHight,hover_color=hover, command=lambda t=text: self.on_click(t))
             btn.grid(row=r, column=c, padx=4, pady=4, sticky="nsew")
 
         # Equal button spans two rows
-        enterBtn = ctk.CTkButton(btnFrame, text="=", fg_color=self.btnGreen, text_color=self.textCol, font=("Comfortaa", 20, "bold"), corner_radius=12, width=BtnWidth, hover_color=self.hoverBtnGreen, command=lambda: self.on_click("Enter"))
+        enterBtn = ctk.CTkButton(btnFrame, text="=", fg_color=self.btnGreen, text_color=self.textCol, font=("Comfortaa", 20, "bold"), corner_radius=12, width=btnWidth, hover_color=self.hoverBtnGreen, command=lambda: self.on_click("Enter"))
         enterBtn.grid(row=4, column=4, rowspan=2, padx=4, pady=4, sticky="nsew")
 
         for i in range(5): 
@@ -101,12 +101,12 @@ class Calculator:
         @brief Binds physical keyboard keys to calculator functions.
         @details Maps numbers, Numpad keys, and basic mathematical operators to the on_click method.
         """
-        # Nums & Numpad
+        # Nums
         for i in range(10): 
             self.root.bind(str(i), lambda e, val=i: self.on_click(str(val)))
             self.root.bind(f"<KP_{i}>", lambda e, val=i: self.on_click(str(val)))
 
-        # Operators
+        # Basic Operations
         self.root.bind("+", lambda e: self.on_click("+"))
         self.root.bind("<KP_Add>", lambda e: self.on_click("+"))
         self.root.bind("-", lambda e: self.on_click("-"))
@@ -116,10 +116,15 @@ class Calculator:
         self.root.bind("/", lambda e: self.on_click("/"))
         self.root.bind("<KP_Divide>", lambda e: self.on_click("/"))
 
+        # Extra operations
+        # self.root.bind("/", lambda e: self.on_click("/"))
+        # self.root.bind("!", lambda e: self.on_click("!"))
+
         # Delimiters and Result
         self.root.bind(".", lambda e: self.on_click(","))
         self.root.bind(",", lambda e: self.on_click(","))
         self.root.bind("<Return>", lambda e: self.on_click("Enter"))
+        self.root.bind("<KP_Enter>", lambda e: self.on_click("Enter"))
         self.root.bind("<BackSpace>", lambda e: self.on_click("DEL"))
         self.root.bind("<Escape>", lambda e: self.on_click("AC"))
 
@@ -132,19 +137,74 @@ class Calculator:
         # handling input
         if char == "AC": 
             self.expression = ""
-            self.idx = 0
         elif char == "DEL": 
             self.expression = self.expression[:-1]
         elif char == "Enter":
             try:
-                temp_expr = self.expression.replace('x', '*').replace(',', '.')
-                result = eval(temp_expr)
-                if result == int(result):
-                    self.expression = str(int(result))
-                else:
-                    self.expression = str(round(result, 4)).replace('.', ',')
-            except Exception:
+                # comma replacing
+                expr = self.expression.replace(',', '.')
+                
+                # Binary operations
+                result = None
+                if "+" in expr:
+                    a, b = expr.split("+")
+                    result = ml.add(a, b)
+                elif "-" in expr:
+                    parts = expr.split("-")
+                    if len(parts) == 2:
+                        result = ml.sub(parts[0], parts[1])
+                elif "x" in expr:
+                    a, b = expr.split("x")
+                    result = ml.mul(a, b)
+                elif "/" in expr:
+                    a, b = expr.split("/")
+                    result = ml.div(a, b)
+                elif "xⁿ" in expr: 
+                    a, b = expr.split("ⁿ")
+                    result = ml.pow(float(a), int(b))
+                elif "%" in expr:
+                    a, b = expr.split("%")
+                    result = ml.percent(a, b)
+
+                if result is not None:
+                    if isinstance(result, float):
+                        result = round(result, 5)
+                    self.expression = str(result).replace('.', ',')
+            except Exception as e:
+                self.label = ctk.CTkLabel(self.root, textvariable=self.displayVar, fg_color=self.displayBg, text_color=self.textCol, corner_radius=20, font=("Comfortaa", 10),anchor="se", padx=20, pady=20, height=180)
+                print(f"Error: {e}") 
+                self.expression = (f"Error: {e}")
+
+
+        # Other operations
+        elif char in ("Sin", "Cos", "Tg", "x!", "|x|", "√x", "+/-"):
+            try:
+                val = float(self.expression.replace(',', '.'))
+                if char == "Sin":
+                    res = ml.sin(val)
+                elif char == "Cos":
+                    res = ml.cos(val)
+                elif char == "Tg":
+                    res = ml.tg(val)
+                elif char == "!":
+                    res = ml.factorial(int(val))
+                elif "|x|":
+                    res = ml.abs(val)
+                elif "√x":
+                    res = ml.sqrt(val)
+                elif "+/-":
+                    res = ml.negate(val)
+                
+                self.expression = str(res).replace('.', ',')
+            except:
                 self.expression = "Error"
+        
+        elif char == "π":
+            self.expression += str(round(ml.pi, 2)).replace('.', ',')
+        
+        elif char == "xⁿ":
+            self.expression += "ⁿ"
+            
         else:
             self.expression += str(char)
         
