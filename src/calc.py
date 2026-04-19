@@ -78,14 +78,20 @@ class Calculator:
             ('1', 4, 0, self.btnBg3,self.hoverBtnBg3,'1'), ('2', 4, 1, self.btnBg3,self.hoverBtnBg3,'2'), ('3', 4, 2, self.btnBg3,self.hoverBtnBg3,'3'), ('xⁿ', 4, 3, self.btnBg2,self.hoverBtnBg2, 'ⁿ'),
             ('+/-', 5, 0, self.btnBg3,self.hoverBtnBg3,'+/-'), ('0', 5, 1, self.btnBg3,self.hoverBtnBg3,'0'), (',', 5, 2, self.btnBg3,self.hoverBtnBg3,','), ('Shift', 5, 3, self.btnBg2,self.hoverBtnBg2,'Shift'),
         ]
-        
+
         # Button dimensions
         btnWidth, btnHight = 60, 60
+
+        # Shifted buttons
+        self.shifted_btns = {}
 
         # Basic buttons layout 
         for (text, r, c, color, hover, value) in btns:
             btn = ctk.CTkButton(btnFrame, text=text, fg_color=color, text_color=self.textCol,font=("Comfortaa", 18), corner_radius=12, width=btnWidth, height=btnHight,hover_color=hover, command=lambda t=value: self.on_click(t))
             btn.grid(row=r, column=c, padx=4, pady=4, sticky="nsew")
+
+            if text in ("Sin", "Cos", "Tg", "Shift"):
+                self.shifted_btns[text] = btn
 
         # Equal button spans two rows
         enterBtn = ctk.CTkButton(btnFrame, text="=", fg_color=self.btnGreen, text_color=self.textCol, font=("Comfortaa", 20, "bold"), corner_radius=12, width=btnWidth, hover_color=self.hoverBtnGreen, command=lambda: self.on_click("Enter"))
@@ -117,7 +123,9 @@ class Calculator:
         self.root.bind("<KP_Divide>", lambda e: self.on_click("/"))
 
         # Other operations
+        self.root.bind(";", lambda e: self.on_click("+/-"))
         self.root.bind("!", lambda e: self.on_click("!"))
+        # Lower case
         self.root.bind("w", lambda e: self.on_click("ⁿ"))
         self.root.bind("q", lambda e: self.on_click("√"))
         self.root.bind("a", lambda e: self.on_click("Abs("))
@@ -126,7 +134,15 @@ class Calculator:
         self.root.bind("c", lambda e: self.on_click("Cos"))
         self.root.bind("t", lambda e: self.on_click("Tg"))
         self.root.bind("p", lambda e: self.on_click("π"))
-        self.root.bind(";", lambda e: self.on_click("+/-"))
+        # Upper case
+        self.root.bind("W", lambda e: self.on_click("ⁿ"))
+        self.root.bind("Q", lambda e: self.on_click("√"))
+        self.root.bind("A", lambda e: self.on_click("Abs("))
+        self.root.bind("M", lambda e: self.on_click("%"))
+        self.root.bind("S", lambda e: self.on_click("Sin"))
+        self.root.bind("C", lambda e: self.on_click("Cos"))
+        self.root.bind("T", lambda e: self.on_click("Tg"))
+        self.root.bind("P", lambda e: self.on_click("π"))
 
         # Delimiters, Delete and Result
         self.root.bind(".", lambda e: self.on_click(","))
@@ -136,17 +152,47 @@ class Calculator:
         self.root.bind("<BackSpace>", lambda e: self.on_click("Del"))
         self.root.bind("<Escape>", lambda e: self.on_click("Ac"))
 
+        # Shift handling
+        self.root.bind("<KeyPress-Shift_L>", self._shift_on)
+        self.root.bind("<KeyRelease-Shift_L>", self._shift_off)
+        self.root.bind("<KeyPress-Shift_R>", self._shift_on)
+        self.root.bind("<KeyRelease-Shift_R>", self._shift_off)
+
+    def _shift_on(self, event=None):
+        self.shift_active = True
+        print("shift")
+        if "Shift" in self.shifted_btns:
+            self.shifted_btns["Shift"].configure(fg_color=self.hoverBtnBg2)
+        self.shifted_btns["Sin"].configure(text="Asin")
+        self.shifted_btns["Cos"].configure(text="Acos")
+        self.shifted_btns["Tg"].configure(text="Atg")
+
+    def _shift_off(self, event=None):
+        self.shift_active = False
+        print("shift")
+        if "Shift" in self.shifted_btns:
+            self.shifted_btns["Shift"].configure(fg_color=self.btnBg2)
+        self.shifted_btns["Sin"].configure(text="Sin")
+        self.shifted_btns["Cos"].configure(text="Cos")
+        self.shifted_btns["Tg"].configure(text="Tg")
+
+
     def on_click(self, char):
         """
         @brief Handles button click and keypress events.
         @details Manages the expression string, performs calculations using math_lib (ml), and updates the display. Handles errors gracefully.
         @param char The character or command string from the pressed button or key.
         """
-        # handling input
         if char == "Ac": 
             self.expression = ""
         elif char == "Del": 
             self.expression = self.expression[:-1]
+        elif char == "Shift":
+            if self.shift_active:
+                self._shift_off()
+            else:
+                self._shift_on()
+            return
         elif char == "Enter":
             try:
                 # comma replacing
@@ -198,26 +244,49 @@ class Calculator:
         # Other operations - instant
         elif char in ("Sin", "Cos", "Tg", "+/-"):
             try:
+                if not self.expression:
+                    return
+                
                 val = float(self.expression.replace(',', '.'))
+                instantResult = None
+
                 if char == "Sin":
-                    instantResult = ml.sin(val)
-                    instantResult = round(instantResult,2)
+                    if self.shift_active:
+                        instantResult = ml.arcsin(val)  
+                    else:
+                        instantResult = ml.sin(val)
+                
                 elif char == "Cos":
-                    instantResult = ml.cos(val)
-                    instantResult = round(instantResult,2)
+                    if self.shift_active:
+                        instantResult = ml.arccos(val) 
+                    else:
+                        instantResult = ml.cos(val)
+                
                 elif char == "Tg":
-                    instantResult = ml.tg(val)
-                    instantResult = round(instantResult,2)
+                    if self.shift_active:
+                        instantResult = ml.arctg(val)
+                    else:
+                        instantResult = ml.tg(val)
+                
                 elif char == "+/-":
                     instantResult = ml.negate(val)
+
+                elif char == "Shift":
+                    if self.shift_active:
+                        self._shift_off()
+                    else:
+                        self._shift_on() 
+                    return  
                 
-                self.expression = str(instantResult).replace('.', ',')
-            except:
+                if instantResult is not None:
+                    self.expression = str(round(instantResult, 2)).replace('.', ',')
+            except Exception as e:
+                print(f"Error: {e}")
                 self.expression = "Error"
         
         elif char == "π":
             self.expression += str(round(ml.pi, 2)).replace('.', ',')
-        
+            
         elif char == "xⁿ":
             self.expression += "ⁿ"
             
