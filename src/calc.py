@@ -73,7 +73,7 @@ class Calculator:
         btns = [
             ('Del', 0, 0, self.btnBg1,self.hoverBtnBg1, 'Del'), ('Ac', 0, 1, self.btnBg1,self.hoverBtnBg1,'Ac'), ('%', 0, 2, self.btnBg1,self.hoverBtnBg1,'%'), ('Sin', 0, 3, self.btnBg1,self.hoverBtnBg1,'Sin'), ('Cos', 0, 4, self.btnBg1,self.hoverBtnBg1,'Cos'),
             ('+', 1, 0, self.btnBg2,self.hoverBtnBg2, '+'), ('-', 1, 1, self.btnBg2,self.hoverBtnBg2,'-'), ('x', 1, 2, self.btnBg2,self.hoverBtnBg2,'x'), ('/', 1, 3, self.btnBg2,self.hoverBtnBg2,'/'), ('Tg', 1, 4, self.btnBg1,self.hoverBtnBg1,'Tg'),
-            ('7', 2, 0, self.btnBg3,self.hoverBtnBg3,'7'), ('8', 2, 1, self.btnBg3,self.hoverBtnBg3,'8'), ('9', 2, 2, self.btnBg3,self.hoverBtnBg3,'9'), ('x!', 2, 3, self.btnBg2,self.hoverBtnBg2,'!'), ('|x|', 2, 4, self.btnBg1,self.hoverBtnBg1,'| |'),
+            ('7', 2, 0, self.btnBg3,self.hoverBtnBg3,'7'), ('8', 2, 1, self.btnBg3,self.hoverBtnBg3,'8'), ('9', 2, 2, self.btnBg3,self.hoverBtnBg3,'9'), ('x!', 2, 3, self.btnBg2,self.hoverBtnBg2,'!'), ('|x|', 2, 4, self.btnBg1,self.hoverBtnBg1,'Abs('),
             ('4', 3, 0, self.btnBg3,self.hoverBtnBg3,'4'), ('5', 3, 1, self.btnBg3,self.hoverBtnBg3,'5'), ('6', 3, 2, self.btnBg3,self.hoverBtnBg3,'6'), ('√x', 3, 3, self.btnBg2,self.hoverBtnBg2,'√'), ('π', 3, 4, self.btnBg1,self.hoverBtnBg1, 'π'),
             ('1', 4, 0, self.btnBg3,self.hoverBtnBg3,'1'), ('2', 4, 1, self.btnBg3,self.hoverBtnBg3,'2'), ('3', 4, 2, self.btnBg3,self.hoverBtnBg3,'3'), ('xⁿ', 4, 3, self.btnBg2,self.hoverBtnBg2, 'ⁿ'),
             ('+/-', 5, 0, self.btnBg3,self.hoverBtnBg3,'+/-'), ('0', 5, 1, self.btnBg3,self.hoverBtnBg3,'0'), (',', 5, 2, self.btnBg3,self.hoverBtnBg3,','), ('Shift', 5, 3, self.btnBg2,self.hoverBtnBg2,'Shift'),
@@ -116,16 +116,17 @@ class Calculator:
         self.root.bind("/", lambda e: self.on_click("/"))
         self.root.bind("<KP_Divide>", lambda e: self.on_click("/"))
 
-        # Extra operations
+        # Other operations
         self.root.bind("!", lambda e: self.on_click("!"))
         self.root.bind("w", lambda e: self.on_click("ⁿ"))
         self.root.bind("q", lambda e: self.on_click("√"))
-        self.root.bind("a", lambda e: self.on_click("| |"))
+        self.root.bind("a", lambda e: self.on_click("Abs("))
         self.root.bind("m", lambda e: self.on_click("%"))
-        self.root.bind("s", lambda e: self.on_click("sin"))
-        self.root.bind("c", lambda e: self.on_click("cos"))
-        self.root.bind("t", lambda e: self.on_click("tg"))
+        self.root.bind("s", lambda e: self.on_click("Sin"))
+        self.root.bind("c", lambda e: self.on_click("Cos"))
+        self.root.bind("t", lambda e: self.on_click("Tg"))
         self.root.bind("p", lambda e: self.on_click("π"))
+        self.root.bind(";", lambda e: self.on_click("+/-"))
 
         # Delimiters, Delete and Result
         self.root.bind(".", lambda e: self.on_click(","))
@@ -151,7 +152,7 @@ class Calculator:
                 # comma replacing
                 expr = self.expression.replace(',', '.')
                 
-                # Binary operations
+                # Binary operations - lazy
                 result = None
                 if "+" in expr:
                     a, b = expr.split("+")
@@ -173,10 +174,17 @@ class Calculator:
                     a, b = expr.split("%")
                     result = ml.percent(float(a), float(b))
                 
-                # Unar operations
+                # Unar operations - lazy
                 elif "√" in expr:
                     a = float(expr[1:].strip())
                     result = ml.sqrt(a)
+                elif "!" in expr:
+                    a = float(expr[:1].strip())
+                    result = ml.factorial(int(a))
+                elif "Abs(" in expr:
+                    a = float(expr[4:].strip())
+                    result = ml.abs(a)
+
 
                 if result is not None:
                     if isinstance(result, float):
@@ -187,24 +195,22 @@ class Calculator:
                 self.expression = (f"Error: {e}")
 
 
-        # Other operations
-        elif char in ("Sin", "Cos", "Tg", "x!", "|x|", "+/-"):
+        # Other operations - instant
+        elif char in ("Sin", "Cos", "Tg", "+/-"):
             try:
                 val = float(self.expression.replace(',', '.'))
                 if char == "Sin":
                     instantResult = ml.sin(val)
+                    instantResult = round(instantResult,2)
                 elif char == "Cos":
                     instantResult = ml.cos(val)
+                    instantResult = round(instantResult,2)
                 elif char == "Tg":
                     instantResult = ml.tg(val)
-                elif char == "!":
-                    instantResult = ml.factorial(int(val))
-                elif "|x|":
-                    instantResult = ml.abs(val)
-                elif "+/-":
+                    instantResult = round(instantResult,2)
+                elif char == "+/-":
                     instantResult = ml.negate(val)
                 
-                # instantResult = round(result, 5)
                 self.expression = str(instantResult).replace('.', ',')
             except:
                 self.expression = "Error"
