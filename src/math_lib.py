@@ -5,7 +5,6 @@
 @details This library includes functions for addition, subtraction, multiplication, division, exponentiation, square root, nth root, arcsine, arccosine, arctangent, sin, cosine and tangent. It can handle integers, floats, negative numbers... The functions are designed to be simple and easy to use, with error handling for invalid inputs.
 @version 0.5
 @date 2026-04-09
-
 @section LICENSE
 This software is licensed under the GNU GPL v3 license.
 """

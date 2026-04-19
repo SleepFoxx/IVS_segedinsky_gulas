@@ -71,20 +71,20 @@ class Calculator:
         btnFrame = ctk.CTkFrame(self.root, fg_color="transparent")
         btnFrame.pack(fill="both", expand=True, padx=10, pady=5)
         btns = [
-            ('DEL', 0, 0, self.btnBg1,self.hoverBtnBg1), ('AC', 0, 1, self.btnBg1,self.hoverBtnBg1), ('%', 0, 2, self.btnBg1,self.hoverBtnBg1), ('Sin', 0, 3, self.btnBg1,self.hoverBtnBg1), ('Cos', 0, 4, self.btnBg1,self.hoverBtnBg1),
-            ('+', 1, 0, self.btnBg2,self.hoverBtnBg2), ('-', 1, 1, self.btnBg2,self.hoverBtnBg2), ('x', 1, 2, self.btnBg2,self.hoverBtnBg2), ('/', 1, 3, self.btnBg2,self.hoverBtnBg2), ('Tg', 1, 4, self.btnBg1,self.hoverBtnBg1),
-            ('7', 2, 0, self.btnBg3,self.hoverBtnBg3), ('8', 2, 1, self.btnBg3,self.hoverBtnBg3), ('9', 2, 2, self.btnBg3,self.hoverBtnBg3), ('x!', 2, 3, self.btnBg2,self.hoverBtnBg2), ('|x|', 2, 4, self.btnBg1,self.hoverBtnBg1),
-            ('4', 3, 0, self.btnBg3,self.hoverBtnBg3), ('5', 3, 1, self.btnBg3,self.hoverBtnBg3), ('6', 3, 2, self.btnBg3,self.hoverBtnBg3), ('√x', 3, 3, self.btnBg2,self.hoverBtnBg2), ('π', 3, 4, self.btnBg1,self.hoverBtnBg1),
-            ('1', 4, 0, self.btnBg3,self.hoverBtnBg3), ('2', 4, 1, self.btnBg3,self.hoverBtnBg3), ('3', 4, 2, self.btnBg3,self.hoverBtnBg3), ('xⁿ', 4, 3, self.btnBg2,self.hoverBtnBg2),
-            ('+/-', 5, 0, self.btnBg3,self.hoverBtnBg3), ('0', 5, 1, self.btnBg3,self.hoverBtnBg3), (',', 5, 2, self.btnBg3,self.hoverBtnBg3), ('Shift', 5, 3, self.btnBg2,self.hoverBtnBg2),
+            ('Del', 0, 0, self.btnBg1,self.hoverBtnBg1, 'Del'), ('Ac', 0, 1, self.btnBg1,self.hoverBtnBg1,'Ac'), ('%', 0, 2, self.btnBg1,self.hoverBtnBg1,'%'), ('Sin', 0, 3, self.btnBg1,self.hoverBtnBg1,'Sin'), ('Cos', 0, 4, self.btnBg1,self.hoverBtnBg1,'Cos'),
+            ('+', 1, 0, self.btnBg2,self.hoverBtnBg2, '+'), ('-', 1, 1, self.btnBg2,self.hoverBtnBg2,'-'), ('x', 1, 2, self.btnBg2,self.hoverBtnBg2,'x'), ('/', 1, 3, self.btnBg2,self.hoverBtnBg2,'/'), ('Tg', 1, 4, self.btnBg1,self.hoverBtnBg1,'Tg'),
+            ('7', 2, 0, self.btnBg3,self.hoverBtnBg3,'7'), ('8', 2, 1, self.btnBg3,self.hoverBtnBg3,'8'), ('9', 2, 2, self.btnBg3,self.hoverBtnBg3,'9'), ('x!', 2, 3, self.btnBg2,self.hoverBtnBg2,'!'), ('|x|', 2, 4, self.btnBg1,self.hoverBtnBg1,'| |'),
+            ('4', 3, 0, self.btnBg3,self.hoverBtnBg3,'4'), ('5', 3, 1, self.btnBg3,self.hoverBtnBg3,'5'), ('6', 3, 2, self.btnBg3,self.hoverBtnBg3,'6'), ('√x', 3, 3, self.btnBg2,self.hoverBtnBg2,'√'), ('π', 3, 4, self.btnBg1,self.hoverBtnBg1, 'π'),
+            ('1', 4, 0, self.btnBg3,self.hoverBtnBg3,'1'), ('2', 4, 1, self.btnBg3,self.hoverBtnBg3,'2'), ('3', 4, 2, self.btnBg3,self.hoverBtnBg3,'3'), ('xⁿ', 4, 3, self.btnBg2,self.hoverBtnBg2, 'ⁿ'),
+            ('+/-', 5, 0, self.btnBg3,self.hoverBtnBg3,'+/-'), ('0', 5, 1, self.btnBg3,self.hoverBtnBg3,'0'), (',', 5, 2, self.btnBg3,self.hoverBtnBg3,','), ('Shift', 5, 3, self.btnBg2,self.hoverBtnBg2,'Shift'),
         ]
         
         # Button dimensions
         btnWidth, btnHight = 60, 60
 
         # Basic buttons layout 
-        for (text, r, c, color, hover) in btns:
-            btn = ctk.CTkButton(btnFrame, text=text, fg_color=color, text_color=self.textCol,font=("Comfortaa", 18), corner_radius=12, width=btnWidth, height=btnHight,hover_color=hover, command=lambda t=text: self.on_click(t))
+        for (text, r, c, color, hover, value) in btns:
+            btn = ctk.CTkButton(btnFrame, text=text, fg_color=color, text_color=self.textCol,font=("Comfortaa", 18), corner_radius=12, width=btnWidth, height=btnHight,hover_color=hover, command=lambda t=value: self.on_click(t))
             btn.grid(row=r, column=c, padx=4, pady=4, sticky="nsew")
 
         # Equal button spans two rows
@@ -117,16 +117,23 @@ class Calculator:
         self.root.bind("<KP_Divide>", lambda e: self.on_click("/"))
 
         # Extra operations
-        # self.root.bind("/", lambda e: self.on_click("/"))
-        # self.root.bind("!", lambda e: self.on_click("!"))
+        self.root.bind("!", lambda e: self.on_click("!"))
+        self.root.bind("w", lambda e: self.on_click("ⁿ"))
+        self.root.bind("q", lambda e: self.on_click("√"))
+        self.root.bind("a", lambda e: self.on_click("| |"))
+        self.root.bind("m", lambda e: self.on_click("%"))
+        self.root.bind("s", lambda e: self.on_click("sin"))
+        self.root.bind("c", lambda e: self.on_click("cos"))
+        self.root.bind("t", lambda e: self.on_click("tg"))
+        self.root.bind("p", lambda e: self.on_click("π"))
 
-        # Delimiters and Result
+        # Delimiters, Delete and Result
         self.root.bind(".", lambda e: self.on_click(","))
         self.root.bind(",", lambda e: self.on_click(","))
         self.root.bind("<Return>", lambda e: self.on_click("Enter"))
         self.root.bind("<KP_Enter>", lambda e: self.on_click("Enter"))
-        self.root.bind("<BackSpace>", lambda e: self.on_click("DEL"))
-        self.root.bind("<Escape>", lambda e: self.on_click("AC"))
+        self.root.bind("<BackSpace>", lambda e: self.on_click("Del"))
+        self.root.bind("<Escape>", lambda e: self.on_click("Ac"))
 
     def on_click(self, char):
         """
@@ -135,9 +142,9 @@ class Calculator:
         @param char The character or command string from the pressed button or key.
         """
         # handling input
-        if char == "AC": 
+        if char == "Ac": 
             self.expression = ""
-        elif char == "DEL": 
+        elif char == "Del": 
             self.expression = self.expression[:-1]
         elif char == "Enter":
             try:
@@ -148,54 +155,57 @@ class Calculator:
                 result = None
                 if "+" in expr:
                     a, b = expr.split("+")
-                    result = ml.add(a, b)
+                    result = ml.add(float(a),float(b))
                 elif "-" in expr:
                     parts = expr.split("-")
                     if len(parts) == 2:
-                        result = ml.sub(parts[0], parts[1])
+                        result = ml.sub(float(parts[0]), float(parts[1]))
                 elif "x" in expr:
                     a, b = expr.split("x")
-                    result = ml.mul(a, b)
+                    result = ml.mul(float(a), float(b))
                 elif "/" in expr:
                     a, b = expr.split("/")
-                    result = ml.div(a, b)
-                elif "xⁿ" in expr: 
+                    result = ml.div(float(a), float(b))
+                elif "ⁿ" in expr: 
                     a, b = expr.split("ⁿ")
                     result = ml.pow(float(a), int(b))
                 elif "%" in expr:
                     a, b = expr.split("%")
-                    result = ml.percent(a, b)
+                    result = ml.percent(float(a), float(b))
+                
+                # Unar operations
+                elif "√" in expr:
+                    a = float(expr[1:].strip())
+                    result = ml.sqrt(a)
 
                 if result is not None:
                     if isinstance(result, float):
                         result = round(result, 5)
                     self.expression = str(result).replace('.', ',')
             except Exception as e:
-                self.label = ctk.CTkLabel(self.root, textvariable=self.displayVar, fg_color=self.displayBg, text_color=self.textCol, corner_radius=20, font=("Comfortaa", 10),anchor="se", padx=20, pady=20, height=180)
                 print(f"Error: {e}") 
                 self.expression = (f"Error: {e}")
 
 
         # Other operations
-        elif char in ("Sin", "Cos", "Tg", "x!", "|x|", "√x", "+/-"):
+        elif char in ("Sin", "Cos", "Tg", "x!", "|x|", "+/-"):
             try:
                 val = float(self.expression.replace(',', '.'))
                 if char == "Sin":
-                    res = ml.sin(val)
+                    instantResult = ml.sin(val)
                 elif char == "Cos":
-                    res = ml.cos(val)
+                    instantResult = ml.cos(val)
                 elif char == "Tg":
-                    res = ml.tg(val)
+                    instantResult = ml.tg(val)
                 elif char == "!":
-                    res = ml.factorial(int(val))
+                    instantResult = ml.factorial(int(val))
                 elif "|x|":
-                    res = ml.abs(val)
-                elif "√x":
-                    res = ml.sqrt(val)
+                    instantResult = ml.abs(val)
                 elif "+/-":
-                    res = ml.negate(val)
+                    instantResult = ml.negate(val)
                 
-                self.expression = str(res).replace('.', ',')
+                # instantResult = round(result, 5)
+                self.expression = str(instantResult).replace('.', ',')
             except:
                 self.expression = "Error"
         
