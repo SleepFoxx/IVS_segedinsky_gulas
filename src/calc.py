@@ -16,6 +16,7 @@ import math_lib as ml
 
 ctk.set_appearance_mode("dark")
 
+
 class Calculator:
     def __init__(self, root):
         """
@@ -34,6 +35,8 @@ class Calculator:
         # Default values
         self.expression = ""
         self.displayVar = tk.StringVar(value="")
+        self.shiftActive = False
+        self.history = []
 
         # Color palette
         self.bodyBg = "#1E1E1E"
@@ -48,27 +51,95 @@ class Calculator:
         self.hoverBtnGreen = "#6AB858"
         self.textCol = "#FFFFFF"
 
-        # Setup 
-        self._createWidgets()
-        self._setup_keybinds()
+        # Setup pages
+        self.mainFrame = ctk.CTkFrame(self.root, fg_color="transparent")
+        self.menuFrame = ctk.CTkFrame(self.root, fg_color=self.bodyBg)
+        self.historyFrame = ctk.CTkFrame(self.root, fg_color=self.bodyBg)
+        self.controlsFrame =ctk.CTkFrame(self.root, fg_color=self.bodyBg)
 
-    def _createWidgets(self):
+        self.createMainWidgets()
+        self.createMenuWidgets()
+        self.createHistoryWidgets()
+
+        self.mainFrame.pack(expand=True, fill="both")
+
+        self.setupKeybinds()
+
+    def showMenu(self):
+        self.mainFrame.pack_forget()
+        self.historyFrame.pack_forget()
+        self.menuFrame.pack(expand=True, fill="both")
+
+    def showCalculator(self):
+        self.menuFrame.pack_forget()
+        self.historyFrame.pack_forget()
+        self.mainFrame.pack(expand=True, fill="both")
+
+    def showControls(self):
+        self.menuFrame.pack_forget()
+        self.historyFrame.pack_forget()
+        self.controlFframe.pack(expand=True, fill="both")
+
+    def showQuit(self):
+        self.root.destroy()
+
+    def showHistory(self):
+        self.mainFrame.pack_forget()
+        self.menuFrame.pack_forget()
+        self.historyFrame.pack(expand=True, fill="both")
+
+    def createMenuWidgets(self):
+        title = ctk.CTkLabel(self.menuFrame, text="Menu", font=("Comfortaa", 30))
+        title.pack(pady=40)
+
+        btnContinue = ctk.CTkButton(self.menuFrame, text="Continue", fg_color=self.btnGreen,height=50,corner_radius=25, hover_color=self.hoverBtnGreen, font=("Comfortaa", 24),command=self.showCalculator)
+        btnContinue.pack(pady=10, padx=50, fill="x")
+
+        btnControls = ctk.CTkButton(self.menuFrame, text="Controls", fg_color="transparent",border_width=2, border_color=self.btnGreen, height=50,corner_radius=25, hover_color=self.btnGreen, font=("Comfortaa", 24),command=self.showControls)
+        btnControls.pack(pady=10, padx=50, fill="x")
+
+        btnQuit = ctk.CTkButton(self.menuFrame, text="Quit", fg_color="transparent", border_width=2, border_color=self.btnGreen,height=50,corner_radius=25,  hover_color=self.btnGreen,font=("Comfortaa", 24),command=self.showQuit)
+        btnQuit.pack(pady=10, padx=50, fill="x")
+
+        # btnHistory = ctk.CTkButton(self.menuFrame, text="History", fg_color="transparent", border_width=2, border_color=self.btnGreen,corner_radius=25, height=50, hover_color=self.btnGreen, font=("Comfortaa", 24),command=self.showHistory)
+        # btnHistory.pack(pady=10, padx=50, fill="x")
+
+    def _create_controls_widgets(self):
+        title = ctk.CTkLabel(self.menuFrame, text="Controls", font=("Comfortaa", 30))
+        title.pack(pady=40)
+
+    def createHistoryWidgets(self):
+        title = ctk.CTkLabel(self.historyFrame, text="History", font=("Comfortaa", 30))
+        title.pack(pady=20)
+        
+        self.historyList = ctk.CTkScrollableFrame(self.historyFrame, fg_color="transparent")
+        self.historyList.pack(expand=True, fill="both", padx=20, pady=10)
+        
+        ctk.CTkButton(self.historyFrame, text="Back", fg_color=self.btnGreen, corner_radius=25, command=self.showMenu).pack(pady=20)
+
+    def addToHistory(self, entry):
+        self.history.append(entry)
+        label = ctk.CTkLabel(self.historyList, text=entry, font=("Comfortaa", 16), anchor="w")
+        label.pack(fill="x", pady=5)    
+    
+    def createMainWidgets(self):
         """
         @brief Creates and packs all UI widgets.
         @details Defines the display area, top navigation buttons, and the main grid of calculator buttons.
         """
         # Display
-        self.label = ctk.CTkLabel(self.root, textvariable=self.displayVar, fg_color=self.displayBg, text_color=self.textCol, corner_radius=20, font=("Comfortaa", 40),anchor="se", padx=20, pady=20, height=180)
+        self.label = ctk.CTkLabel(self.mainFrame, textvariable=self.displayVar, fg_color=self.displayBg, text_color=self.textCol, corner_radius=20, font=("Comfortaa", 40),anchor="se", padx=20, pady=20, height=180)        
         self.label.pack(expand=True, fill="both", padx=15, pady=15)
 
         # Helper btns
-        topFrame = ctk.CTkFrame(self.root, fg_color="transparent")
+        topFrame = ctk.CTkFrame(self.mainFrame, fg_color="transparent")
         topFrame.pack(fill="x", padx=10, pady=5)
-        ctk.CTkButton(topFrame, text="Tips&Tricks", fg_color=self.btnGreen, text_color=self.textCol, hover_color=self.hoverBtnGreen, corner_radius=10, font=("Comfortaa", 14)).pack(side="left", expand=True, fill="x", padx=5)
-        ctk.CTkButton(topFrame, text="Settings", fg_color=self.btnGreen, text_color=self.textCol, hover_color=self.hoverBtnGreen, corner_radius=10, font=("Comfortaa", 14)).pack(side="left", expand=True, fill="x", padx=5)
+
+        ctk.CTkButton(topFrame, text="History", fg_color=self.btnGreen, text_color=self.textCol, hover_color=self.hoverBtnGreen, corner_radius=10, font=("Comfortaa", 14)).pack(side="left", expand=True, fill="x", padx=5)
+        ctk.CTkButton(topFrame, text="Menu", command=self.showMenu, fg_color=self.btnGreen, text_color=self.textCol, hover_color=self.hoverBtnGreen, corner_radius=10, font=("Comfortaa", 14)).pack(side="left", expand=True, fill="x", padx=5)
 
         # Main btns grid definition
-        btnFrame = ctk.CTkFrame(self.root, fg_color="transparent")
+        btnFrame = ctk.CTkFrame(self.mainFrame, fg_color="transparent")
         btnFrame.pack(fill="both", expand=True, padx=10, pady=5)
         btns = [
             ('Del', 0, 0, self.btnBg1,self.hoverBtnBg1, 'Del'), ('Ac', 0, 1, self.btnBg1,self.hoverBtnBg1,'Ac'), ('%', 0, 2, self.btnBg1,self.hoverBtnBg1,'%'), ('Sin', 0, 3, self.btnBg1,self.hoverBtnBg1,'Sin'), ('Cos', 0, 4, self.btnBg1,self.hoverBtnBg1,'Cos'),
@@ -83,18 +154,18 @@ class Calculator:
         btnWidth, btnHight = 60, 60
 
         # Shifted buttons
-        self.shifted_btns = {}
+        self.shiftedBtns = {}
 
         # Basic buttons layout 
         for (text, r, c, color, hover, value) in btns:
-            btn = ctk.CTkButton(btnFrame, text=text, fg_color=color, text_color=self.textCol,font=("Comfortaa", 18), corner_radius=12, width=btnWidth, height=btnHight,hover_color=hover, command=lambda t=value: self.on_click(t))
+            btn = ctk.CTkButton(btnFrame, text=text, fg_color=color, text_color=self.textCol,font=("Comfortaa", 18), corner_radius=12, width=btnWidth, height=btnHight,hover_color=hover, command=lambda t=value: self.onClick(t))
             btn.grid(row=r, column=c, padx=4, pady=4, sticky="nsew")
 
             if text in ("Sin", "Cos", "Tg", "Shift"):
-                self.shifted_btns[text] = btn
+                self.shiftedBtns[text] = btn
 
         # Equal button spans two rows
-        enterBtn = ctk.CTkButton(btnFrame, text="=", fg_color=self.btnGreen, text_color=self.textCol, font=("Comfortaa", 20, "bold"), corner_radius=12, width=btnWidth, hover_color=self.hoverBtnGreen, command=lambda: self.on_click("Enter"))
+        enterBtn = ctk.CTkButton(btnFrame, text="=", fg_color=self.btnGreen, text_color=self.textCol, font=("Comfortaa", 20, "bold"), corner_radius=12, width=btnWidth, hover_color=self.hoverBtnGreen, command=lambda: self.onClick("Enter"))
         enterBtn.grid(row=4, column=4, rowspan=2, padx=4, pady=4, sticky="nsew")
 
         for i in range(5): 
@@ -102,82 +173,82 @@ class Calculator:
         for i in range(6): 
             btnFrame.rowconfigure(i, weight=1, uniform="row")
 
-    def _setup_keybinds(self):
+    def setupKeybinds(self):
         """
         @brief Binds physical keyboard keys to calculator functions.
-        @details Maps numbers, Numpad keys, and basic mathematical operators to the on_click method.
+        @details Maps numbers, Numpad keys, and basic mathematical operators to the onClick method.
         """
         # Nums
         for i in range(10): 
-            self.root.bind(str(i), lambda e, val=i: self.on_click(str(val)))
-            self.root.bind(f"<KP_{i}>", lambda e, val=i: self.on_click(str(val)))
+            self.root.bind(str(i), lambda e, val=i: self.onClick(str(val)))
+            self.root.bind(f"<KP_{i}>", lambda e, val=i: self.onClick(str(val)))
 
         # Basic Operations
-        self.root.bind("+", lambda e: self.on_click("+"))
-        self.root.bind("<KP_Add>", lambda e: self.on_click("+"))
-        self.root.bind("-", lambda e: self.on_click("-"))
-        self.root.bind("<KP_Subtract>", lambda e: self.on_click("-"))
-        self.root.bind("*", lambda e: self.on_click("x"))
-        self.root.bind("<KP_Multiply>", lambda e: self.on_click("x"))
-        self.root.bind("/", lambda e: self.on_click("/"))
-        self.root.bind("<KP_Divide>", lambda e: self.on_click("/"))
+        self.root.bind("+", lambda e: self.onClick("+"))
+        self.root.bind("<KP_Add>", lambda e: self.onClick("+"))
+        self.root.bind("-", lambda e: self.onClick("-"))
+        self.root.bind("<KP_Subtract>", lambda e: self.onClick("-"))
+        self.root.bind("*", lambda e: self.onClick("x"))
+        self.root.bind("<KP_Multiply>", lambda e: self.onClick("x"))
+        self.root.bind("/", lambda e: self.onClick("/"))
+        self.root.bind("<KP_Divide>", lambda e: self.onClick("/"))
 
         # Other operations
-        self.root.bind(";", lambda e: self.on_click("+/-"))
-        self.root.bind("!", lambda e: self.on_click("!"))
+        self.root.bind(";", lambda e: self.onClick("+/-"))
+        self.root.bind("!", lambda e: self.onClick("!"))
         # Lower case
-        self.root.bind("w", lambda e: self.on_click("ⁿ"))
-        self.root.bind("q", lambda e: self.on_click("√"))
-        self.root.bind("a", lambda e: self.on_click("Abs("))
-        self.root.bind("m", lambda e: self.on_click("%"))
-        self.root.bind("s", lambda e: self.on_click("Sin"))
-        self.root.bind("c", lambda e: self.on_click("Cos"))
-        self.root.bind("t", lambda e: self.on_click("Tg"))
-        self.root.bind("p", lambda e: self.on_click("π"))
+        self.root.bind("w", lambda e: self.onClick("ⁿ"))
+        self.root.bind("q", lambda e: self.onClick("√"))
+        self.root.bind("a", lambda e: self.onClick("Abs("))
+        self.root.bind("m", lambda e: self.onClick("%"))
+        self.root.bind("s", lambda e: self.onClick("Sin"))
+        self.root.bind("c", lambda e: self.onClick("Cos"))
+        self.root.bind("t", lambda e: self.onClick("Tg"))
+        self.root.bind("p", lambda e: self.onClick("π"))
         # Upper case
-        self.root.bind("W", lambda e: self.on_click("ⁿ"))
-        self.root.bind("Q", lambda e: self.on_click("√"))
-        self.root.bind("A", lambda e: self.on_click("Abs("))
-        self.root.bind("M", lambda e: self.on_click("%"))
-        self.root.bind("S", lambda e: self.on_click("Sin"))
-        self.root.bind("C", lambda e: self.on_click("Cos"))
-        self.root.bind("T", lambda e: self.on_click("Tg"))
-        self.root.bind("P", lambda e: self.on_click("π"))
+        self.root.bind("W", lambda e: self.onClick("ⁿ"))
+        self.root.bind("Q", lambda e: self.onClick("√"))
+        self.root.bind("A", lambda e: self.onClick("Abs("))
+        self.root.bind("M", lambda e: self.onClick("%"))
+        self.root.bind("S", lambda e: self.onClick("Sin"))
+        self.root.bind("C", lambda e: self.onClick("Cos"))
+        self.root.bind("T", lambda e: self.onClick("Tg"))
+        self.root.bind("P", lambda e: self.onClick("π"))
 
         # Delimiters, Delete and Result
-        self.root.bind(".", lambda e: self.on_click(","))
-        self.root.bind(",", lambda e: self.on_click(","))
-        self.root.bind("<Return>", lambda e: self.on_click("Enter"))
-        self.root.bind("<KP_Enter>", lambda e: self.on_click("Enter"))
-        self.root.bind("<BackSpace>", lambda e: self.on_click("Del"))
-        self.root.bind("<Escape>", lambda e: self.on_click("Ac"))
+        self.root.bind(".", lambda e: self.onClick(","))
+        self.root.bind(",", lambda e: self.onClick(","))
+        self.root.bind("<Return>", lambda e: self.onClick("Enter"))
+        self.root.bind("<KP_Enter>", lambda e: self.onClick("Enter"))
+        self.root.bind("<BackSpace>", lambda e: self.onClick("Del"))
+        self.root.bind("<Escape>", lambda e: self.onClick("Ac"))
 
         # Shift handling
-        self.root.bind("<KeyPress-Shift_L>", self._shift_on)
-        self.root.bind("<KeyRelease-Shift_L>", self._shift_off)
-        self.root.bind("<KeyPress-Shift_R>", self._shift_on)
-        self.root.bind("<KeyRelease-Shift_R>", self._shift_off)
+        self.root.bind("<KeyPress-Shift_L>", self.shiftOn)
+        self.root.bind("<KeyRelease-Shift_L>", self.shiftOff)
+        self.root.bind("<KeyPress-Shift_R>", self.shiftOn)
+        self.root.bind("<KeyRelease-Shift_R>", self.shiftOff)
 
-    def _shift_on(self, event=None):
-        self.shift_active = True
+    def shiftOn(self, event=None):
+        self.shiftActive = True
         print("shift")
-        if "Shift" in self.shifted_btns:
-            self.shifted_btns["Shift"].configure(fg_color=self.hoverBtnBg2)
-        self.shifted_btns["Sin"].configure(text="Asin")
-        self.shifted_btns["Cos"].configure(text="Acos")
-        self.shifted_btns["Tg"].configure(text="Atg")
+        if "Shift" in self.shiftedBtns:
+            self.shiftedBtns["Shift"].configure(fg_color=self.hoverBtnBg2)
+        self.shiftedBtns["Sin"].configure(text="Asin")
+        self.shiftedBtns["Cos"].configure(text="Acos")
+        self.shiftedBtns["Tg"].configure(text="Atg")
 
-    def _shift_off(self, event=None):
-        self.shift_active = False
+    def shiftOff(self, event=None):
+        self.shiftActive = False
         print("shift")
-        if "Shift" in self.shifted_btns:
-            self.shifted_btns["Shift"].configure(fg_color=self.btnBg2)
-        self.shifted_btns["Sin"].configure(text="Sin")
-        self.shifted_btns["Cos"].configure(text="Cos")
-        self.shifted_btns["Tg"].configure(text="Tg")
+        if "Shift" in self.shiftedBtns:
+            self.shiftedBtns["Shift"].configure(fg_color=self.btnBg2)
+        self.shiftedBtns["Sin"].configure(text="Sin")
+        self.shiftedBtns["Cos"].configure(text="Cos")
+        self.shiftedBtns["Tg"].configure(text="Tg")
 
 
-    def on_click(self, char):
+    def onClick(self, char):
         """
         @brief Handles button click and keypress events.
         @details Manages the expression string, performs calculations using math_lib (ml), and updates the display. Handles errors gracefully.
@@ -188,10 +259,10 @@ class Calculator:
         elif char == "Del": 
             self.expression = self.expression[:-1]
         elif char == "Shift":
-            if self.shift_active:
-                self._shift_off()
+            if self.shiftActive:
+                self.shiftOff()
             else:
-                self._shift_on()
+                self.shiftOn()
             return
         elif char == "Enter":
             try:
@@ -251,19 +322,19 @@ class Calculator:
                 instantResult = None
 
                 if char == "Sin":
-                    if self.shift_active:
+                    if self.shiftActive:
                         instantResult = ml.arcsin(val)  
                     else:
                         instantResult = ml.sin(val)
                 
                 elif char == "Cos":
-                    if self.shift_active:
+                    if self.shiftActive:
                         instantResult = ml.arccos(val) 
                     else:
                         instantResult = ml.cos(val)
                 
                 elif char == "Tg":
-                    if self.shift_active:
+                    if self.shiftActive:
                         instantResult = ml.arctg(val)
                     else:
                         instantResult = ml.tg(val)
@@ -272,10 +343,10 @@ class Calculator:
                     instantResult = ml.negate(val)
 
                 elif char == "Shift":
-                    if self.shift_active:
-                        self._shift_off()
+                    if self.shiftActive:
+                        self.shiftOff()
                     else:
-                        self._shift_on() 
+                        self.shiftOn() 
                     return  
                 
                 if instantResult is not None:
