@@ -118,11 +118,11 @@ class Calculator:
         title = ctk.CTkLabel(self.controlsFrame, text="Controls", font=("Comfortaa", 50, "bold"), text_color=self.textCol)
         title.pack(pady=40)
 
-        scrollContainer = ctk.CTkScrollableFrame(self.controlsFrame, fg_color=self.bodyBg, label_text="")
-        scrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
-        scrollContainer.bind_all("<Button-4>", lambda e: scrollContainer._parent_canvas.yview_scroll(-1, "units"))
-        scrollContainer.bind_all("<Button-5>", lambda e: scrollContainer._parent_canvas.yview_scroll(1, "units"))
-        scrollContainer.bind_all("<MouseWheel>", lambda e: scrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        controlsScrollContainer = ctk.CTkScrollableFrame(self.controlsFrame, fg_color=self.bodyBg, label_text="")
+        controlsScrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
+        controlsScrollContainer.bind_all("<Button-4>", lambda e: controlsScrollContainer._parent_canvas.yview_scroll(-1, "units"))
+        controlsScrollContainer.bind_all("<Button-5>", lambda e: controlsScrollContainer._parent_canvas.yview_scroll(1, "units"))
+        controlsScrollContainer.bind_all("<MouseWheel>", lambda e: controlsScrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
 
         controlsData = [
             ("Ac", "Clear all", "ESC"),
@@ -148,7 +148,7 @@ class Calculator:
             ("+/-", "Negative/Positive", ";")
         ]
         for btnText, keybind, descText in controlsData:
-            row = ctk.CTkFrame(scrollContainer, fg_color="transparent")
+            row = ctk.CTkFrame(controlsScrollContainer, fg_color="transparent")
             row.pack(fill="x", pady=5)
 
             item = ctk.CTkButton(row, text=btnText, width=70, height=40, corner_radius=15,fg_color=self.btnGreen, text_color=self.textCol,font=("Comfortaa", 16, "bold"))
@@ -164,20 +164,41 @@ class Calculator:
         btnBack.pack(pady=30, padx=50, fill="x")
 
     def createTipsWidgets(self):
-        title = ctk.CTkLabel(self.tipsFrame, text="Tips&Tricks", font=("Comfortaa", 30))
+        title = ctk.CTkLabel(self.tipsFrame, text="Tips&Tricks", font=("Comfortaa", 50, "bold"))
         title.pack(pady=40)
+        
+        tipsScrollContainer = ctk.CTkScrollableFrame(self.tipsFrame, fg_color=self.bodyBg, label_text="")
+        tipsScrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
+        tipsScrollContainer.bind_all("<Button-4>", lambda e: tipsScrollContainer._parent_canvas.yview_scroll(-1, "units"))
+        tipsScrollContainer.bind_all("<Button-5>", lambda e: tipsScrollContainer._parent_canvas.yview_scroll(1, "units"))
+        tipsScrollContainer.bind_all("<MouseWheel>", lambda e: tipsScrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        
+        tips = [
+            ("💡 Shifting", "Hold SHIFT to access inverse functions like Asin, Acos, or Atg. The button labels will update automatically."),
+            ("💡 Unary Ops", "Trigonometry and negation (+/-) are instant. Just enter a number and press the function key for an immediate result."),
+            ("💡 Binary Ops", "For basic math (+, -, x, /) or powers (xⁿ), enter the full expression and press the ENTER/EQUAL button."),
+            ("💡 Shortcuts", "Use your keyboard for speed! 'S' for Sin, 'Q' for Square Root, or 'W' for Powers. ESC clears everything.")
+        ]
+        for tipTitle, tipText in tips:
+            card = ctk.CTkFrame(tipsScrollContainer, fg_color=self.btnGreen, corner_radius=15)
+            card.pack(fill="x", pady=10, padx=5)
+            
+            ctk.CTkLabel(card, text=tipTitle, font=("Comfortaa", 18, "bold"),  text_color="white", anchor="w").pack(fill="x", padx=15, pady=(10, 0))
+            ctk.CTkLabel(card, text=tipText, font=("Comfortaa", 13),text_color="white", wraplength=300, justify="left").pack(fill="x", padx=15, pady=(5, 10))
 
-        btnBack = ctk.CTkButton(self.tipsFrame, text="Back", fg_color=self.btnGreen,height=50,corner_radius=25, hover_color=self.hoverBtnGreen, font=("Comfortaa", 24),command=self.showMenu)
+        btnBack = ctk.CTkButton(self.tipsFrame, text="Back", fg_color="transparent",border_width=2,border_color=self.btnGreen,height=50,corner_radius=25, hover_color=self.hoverBtnGreen, font=("Comfortaa", 24),command=self.showMenu)
         btnBack.pack(pady=30, padx=50, fill="x")
 
     def createHistoryWidgets(self):
-        title = ctk.CTkLabel(self.historyFrame, text="History", font=("Comfortaa", 30))
-        title.pack(pady=20)
+        title = ctk.CTkLabel(self.historyFrame, text="History", font=("Comfortaa", 50, "bold"))
+        title.pack(pady=40)
         
-        self.historyList = ctk.CTkScrollableFrame(self.historyFrame, fg_color="transparent")
-        self.historyList.pack(expand=True, fill="both", padx=20, pady=10)
+        historyScrollContainer = ctk.CTkScrollableFrame(self.historyFrame, fg_color=self.bodyBg, label_text="")
+        historyScrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
+        historyScrollContainer.bind_all("<Button-4>", lambda e: historyScrollContainer._parent_canvas.yview_scroll(-1, "units"))
+        historyScrollContainer.bind_all("<Button-5>", lambda e: historyScrollContainer._parent_canvas.yview_scroll(1, "units"))
+        historyScrollContainer.bind_all("<MouseWheel>", lambda e: historyScrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
         
-        # ctk.CTkButton(self.historyFrame, text="Back", fg_color=self.btnGreen, corner_radius=25, command=self.showMenu).pack(pady=20)
         btnBack = ctk.CTkButton(self.historyFrame, text="Back", fg_color="transparent",border_width=2,border_color=self.btnGreen,height=50,corner_radius=25, hover_color=self.hoverBtnGreen, font=("Comfortaa", 24),command=self.showCalculator)
         btnBack.pack(pady=30, padx=50, fill="x")
 
