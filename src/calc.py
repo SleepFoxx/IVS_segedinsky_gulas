@@ -56,9 +56,12 @@ class Calculator:
         self.menuFrame = ctk.CTkFrame(self.root, fg_color=self.bodyBg)
         self.historyFrame = ctk.CTkFrame(self.root, fg_color=self.bodyBg)
         self.controlsFrame =ctk.CTkFrame(self.root, fg_color=self.bodyBg)
+        self.tipsFrame =ctk.CTkFrame(self.root, fg_color=self.bodyBg)
 
-        self.createMainWidgets()
+        self.createCalculatorWidgets()
         self.createMenuWidgets()
+        self.createControlsWidgets()
+        self.createTipsWidgets()
         self.createHistoryWidgets()
 
         self.mainFrame.pack(expand=True, fill="both")
@@ -68,6 +71,8 @@ class Calculator:
     def showMenu(self):
         self.mainFrame.pack_forget()
         self.historyFrame.pack_forget()
+        self.tipsFrame.pack_forget()
+        self.controlsFrame.pack_forget()
         self.menuFrame.pack(expand=True, fill="both")
 
     def showCalculator(self):
@@ -78,7 +83,12 @@ class Calculator:
     def showControls(self):
         self.menuFrame.pack_forget()
         self.historyFrame.pack_forget()
-        self.controlFframe.pack(expand=True, fill="both")
+        self.controlsFrame.pack(expand=True, fill="both")
+
+    def showTips(self):
+        self.menuFrame.pack_forget()
+        self.historyFrame.pack_forget()
+        self.tipsFrame.pack(expand=True, fill="both")
 
     def showQuit(self):
         self.root.destroy()
@@ -89,7 +99,7 @@ class Calculator:
         self.historyFrame.pack(expand=True, fill="both")
 
     def createMenuWidgets(self):
-        title = ctk.CTkLabel(self.menuFrame, text="Menu", font=("Comfortaa", 30))
+        title = ctk.CTkLabel(self.menuFrame, text="Menu",text_color=self.textCol, font=("Comfortaa", 50, "bold"))
         title.pack(pady=40)
 
         btnContinue = ctk.CTkButton(self.menuFrame, text="Continue", fg_color=self.btnGreen,height=50,corner_radius=25, hover_color=self.hoverBtnGreen, font=("Comfortaa", 24),command=self.showCalculator)
@@ -98,15 +108,67 @@ class Calculator:
         btnControls = ctk.CTkButton(self.menuFrame, text="Controls", fg_color="transparent",border_width=2, border_color=self.btnGreen, height=50,corner_radius=25, hover_color=self.btnGreen, font=("Comfortaa", 24),command=self.showControls)
         btnControls.pack(pady=10, padx=50, fill="x")
 
+        btnTips = ctk.CTkButton(self.menuFrame, text="Tips&Tricks", fg_color="transparent",border_width=2, border_color=self.btnGreen, height=50,corner_radius=25, hover_color=self.btnGreen, font=("Comfortaa", 24),command=self.showTips)
+        btnTips.pack(pady=10, padx=50, fill="x")
+
         btnQuit = ctk.CTkButton(self.menuFrame, text="Quit", fg_color="transparent", border_width=2, border_color=self.btnGreen,height=50,corner_radius=25,  hover_color=self.btnGreen,font=("Comfortaa", 24),command=self.showQuit)
         btnQuit.pack(pady=10, padx=50, fill="x")
 
-        # btnHistory = ctk.CTkButton(self.menuFrame, text="History", fg_color="transparent", border_width=2, border_color=self.btnGreen,corner_radius=25, height=50, hover_color=self.btnGreen, font=("Comfortaa", 24),command=self.showHistory)
-        # btnHistory.pack(pady=10, padx=50, fill="x")
-
-    def _create_controls_widgets(self):
-        title = ctk.CTkLabel(self.menuFrame, text="Controls", font=("Comfortaa", 30))
+    def createControlsWidgets(self):
+        title = ctk.CTkLabel(self.controlsFrame, text="Controls", font=("Comfortaa", 50, "bold"), text_color=self.textCol)
         title.pack(pady=40)
+
+        scrollContainer = ctk.CTkScrollableFrame(self.controlsFrame, fg_color=self.bodyBg, label_text="")
+        scrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
+        scrollContainer.bind_all("<Button-4>", lambda e: scrollContainer._parent_canvas.yview_scroll(-1, "units"))
+        scrollContainer.bind_all("<Button-5>", lambda e: scrollContainer._parent_canvas.yview_scroll(1, "units"))
+        scrollContainer.bind_all("<MouseWheel>", lambda e: scrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+
+        controlsData = [
+            ("Ac", "Clear all", "ESC"),
+            ("Del", "Delete last", "Backspace"),
+            ("Shift", "Secondary functions", "Shift"),
+            ("=", "Calculate", "Enter"),
+            ("%", "Modulo", "M"),
+            ("Sin", "Sine", "S"),
+            ("Cos", "Cosine", "C"),
+            ("Tg", "Tangent", "T"),
+            ("Asin", "Arc sine", "Shift + S"),
+            ("Acos", "Arc cosine", "Shift + C"),
+            ("Atg", "Arc tangent", "Shift + T"),
+            ("+", "Addition", "+"),
+            ("-", "Subtraction", "-"),
+            ("x", "Multiplication", "*"),
+            ("/", "Division", "/"),
+            ("x!", "Factorial", "!"),
+            ("xⁿ", "Power of n", "W"),
+            ("√x", "Square root", "Q"),
+            ("π", "Constant Pi", "P"),
+            (",", "Decimal point", "."),
+            ("+/-", "Negative/Positive", ";")
+        ]
+        for btnText, keybind, descText in controlsData:
+            row = ctk.CTkFrame(scrollContainer, fg_color="transparent")
+            row.pack(fill="x", pady=5)
+
+            item = ctk.CTkButton(row, text=btnText, width=70, height=40, corner_radius=15,fg_color=self.btnGreen, text_color=self.textCol,font=("Comfortaa", 16, "bold"))
+            item.pack(side="left")
+
+            item = ctk.CTkLabel(row, text=descText, text_color=self.textCol,font=("Comfortaa", 16))
+            item.pack(side="left", padx=15)
+
+            keybind = ctk.CTkLabel(row, text=keybind,  text_color=self.btnGreen,font=("Comfortaa", 16))
+            keybind.pack(side="right", padx=10)
+
+        btnBack = ctk.CTkButton(self.controlsFrame, text="Back", fg_color="transparent",border_width=2,border_color=self.btnGreen,height=50,corner_radius=25, hover_color=self.hoverBtnGreen, font=("Comfortaa", 24),command=self.showMenu)
+        btnBack.pack(pady=30, padx=50, fill="x")
+
+    def createTipsWidgets(self):
+        title = ctk.CTkLabel(self.tipsFrame, text="Tips&Tricks", font=("Comfortaa", 30))
+        title.pack(pady=40)
+
+        btnBack = ctk.CTkButton(self.tipsFrame, text="Back", fg_color=self.btnGreen,height=50,corner_radius=25, hover_color=self.hoverBtnGreen, font=("Comfortaa", 24),command=self.showMenu)
+        btnBack.pack(pady=30, padx=50, fill="x")
 
     def createHistoryWidgets(self):
         title = ctk.CTkLabel(self.historyFrame, text="History", font=("Comfortaa", 30))
@@ -115,14 +177,11 @@ class Calculator:
         self.historyList = ctk.CTkScrollableFrame(self.historyFrame, fg_color="transparent")
         self.historyList.pack(expand=True, fill="both", padx=20, pady=10)
         
-        ctk.CTkButton(self.historyFrame, text="Back", fg_color=self.btnGreen, corner_radius=25, command=self.showMenu).pack(pady=20)
+        # ctk.CTkButton(self.historyFrame, text="Back", fg_color=self.btnGreen, corner_radius=25, command=self.showMenu).pack(pady=20)
+        btnBack = ctk.CTkButton(self.historyFrame, text="Back", fg_color="transparent",border_width=2,border_color=self.btnGreen,height=50,corner_radius=25, hover_color=self.hoverBtnGreen, font=("Comfortaa", 24),command=self.showCalculator)
+        btnBack.pack(pady=30, padx=50, fill="x")
 
-    def addToHistory(self, entry):
-        self.history.append(entry)
-        label = ctk.CTkLabel(self.historyList, text=entry, font=("Comfortaa", 16), anchor="w")
-        label.pack(fill="x", pady=5)    
-    
-    def createMainWidgets(self):
+    def createCalculatorWidgets(self):
         """
         @brief Creates and packs all UI widgets.
         @details Defines the display area, top navigation buttons, and the main grid of calculator buttons.
@@ -135,8 +194,8 @@ class Calculator:
         topFrame = ctk.CTkFrame(self.mainFrame, fg_color="transparent")
         topFrame.pack(fill="x", padx=10, pady=5)
 
-        ctk.CTkButton(topFrame, text="History", fg_color=self.btnGreen, text_color=self.textCol, hover_color=self.hoverBtnGreen, corner_radius=10, font=("Comfortaa", 14)).pack(side="left", expand=True, fill="x", padx=5)
-        ctk.CTkButton(topFrame, text="Menu", command=self.showMenu, fg_color=self.btnGreen, text_color=self.textCol, hover_color=self.hoverBtnGreen, corner_radius=10, font=("Comfortaa", 14)).pack(side="left", expand=True, fill="x", padx=5)
+        ctk.CTkButton(topFrame, text="History", command=self.showHistory,fg_color=self.btnGreen, text_color=self.textCol, hover_color=self.hoverBtnGreen, corner_radius=10, font=("Comfortaa", 16)).pack(side="left", expand=True, fill="x", padx=5)
+        ctk.CTkButton(topFrame, text="Menu", command=self.showMenu, fg_color=self.btnGreen, text_color=self.textCol, hover_color=self.hoverBtnGreen, corner_radius=10, font=("Comfortaa", 16)).pack(side="left", expand=True, fill="x", padx=5)
 
         # Main btns grid definition
         btnFrame = ctk.CTkFrame(self.mainFrame, fg_color="transparent")
