@@ -304,14 +304,15 @@ class Calculator:
         ]
 
         # Button dimensions
-        btnWidth, btnHight = 60, 60
+        btnWidth = 60
+        btnHeight = 60
 
         # Shifted buttons
         self.shiftedBtns = {}
 
         # Basic buttons layout 
         for (text, r, c, color, hover, value) in btns:
-            btn = ctk.CTkButton(btnFrame, text=text, fg_color=color, text_color=self.textCol,font=("Comfortaa", 18), corner_radius=12, width=btnWidth, height=btnHight,hover_color=hover, command=lambda t=value: self.onClick(t))
+            btn = ctk.CTkButton(btnFrame, text=text, fg_color=color, text_color=self.textCol,font=("Comfortaa", 18), corner_radius=12, width=btnWidth, height=btnHeight,hover_color=hover, command=lambda t=value: self.onClick(t))
             btn.grid(row=r, column=c, padx=4, pady=4, sticky="nsew")
 
             if text in ("Sin", "Cos", "Tg", "Shift"):
@@ -430,12 +431,11 @@ class Calculator:
                 # Binary operations - lazy
                 result = None
                 if "+" in expr:
-                    a, b = expr.split("+")
+                    a, b = expr.rsplit("+", 1)
                     result = ml.add(float(a),float(b))
                 elif "-" in expr:
-                    parts = expr.split("-")
-                    if len(parts) == 2:
-                        result = ml.sub(float(parts[0]), float(parts[1]))
+                    a, b = expr.rsplit("-", 1)
+                    result = ml.sub(float(a), float(b))
                 elif "x" in expr:
                     a, b = expr.split("x")
                     result = ml.mul(float(a), float(b))
@@ -454,7 +454,7 @@ class Calculator:
                     a = float(expr[1:].strip())
                     result = ml.sqrt(a)
                 elif "!" in expr:
-                    a = float(expr[:1].strip())
+                    a = float(expr[:-1].strip())
                     result = ml.factorial(int(a))
                 elif "Abs(" in expr:
                     a = float(expr[4:].strip())
