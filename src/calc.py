@@ -20,9 +20,9 @@ ctk.set_appearance_mode("dark")
 class Calculator:
     def __init__(self, root):
         """
-        @brief Initializes the calculator application.
-        @details Sets up the main window, styling variables, and initializes the UI components.
-        @param root The root Tkinter/CustomTkinter window object.
+        @brief Initializes the calculator application
+        @details Sets dimensions, styles, frames, and widget components
+        @param root The root CustomTkinter window 
         """
 
         # Dimensions
@@ -69,6 +69,9 @@ class Calculator:
         self.setupKeybinds()
 
     def showMenu(self):
+        """
+        @brief Switches UI to the menu page
+        """
         self.mainFrame.pack_forget()
         self.historyFrame.pack_forget()
         self.tipsFrame.pack_forget()
@@ -76,29 +79,48 @@ class Calculator:
         self.menuFrame.pack(expand=True, fill="both")
 
     def showCalculator(self):
+        """ 
+        @brief Switches UI to the calculator page
+        """
         self.menuFrame.pack_forget()
         self.historyFrame.pack_forget()
         self.mainFrame.pack(expand=True, fill="both")
 
     def showControls(self):
+        """
+        @brief Switches UI to the controls page
+        """
         self.menuFrame.pack_forget()
         self.historyFrame.pack_forget()
         self.controlsFrame.pack(expand=True, fill="both")
 
     def showTips(self):
+        """
+        @brief Switches UI to the tips&tricks page
+        """
         self.menuFrame.pack_forget()
         self.historyFrame.pack_forget()
         self.tipsFrame.pack(expand=True, fill="both")
 
     def showQuit(self):
+        """
+        @brief Closes the application
+        """
         self.root.destroy()
 
     def showHistory(self):
+        """
+        @brief Updates the history dispaly and switches UI to the history page
+        """
         self.mainFrame.pack_forget()
         self.menuFrame.pack_forget()
+        self.updateHistoryDisplay()
         self.historyFrame.pack(expand=True, fill="both")
 
     def createMenuWidgets(self):
+        """
+        @brief Creates buttons and title for the menu page.
+        """
         title = ctk.CTkLabel(self.menuFrame, text="Menu",text_color=self.textCol, font=("Comfortaa", 50, "bold"))
         title.pack(pady=40)
 
@@ -115,14 +137,18 @@ class Calculator:
         btnQuit.pack(pady=10, padx=50, fill="x")
 
     def createControlsWidgets(self):
+        """
+        @brief Shows the controls page with legend of keybinds
+        @bug Auto gestures scroll
+        """
         title = ctk.CTkLabel(self.controlsFrame, text="Controls", font=("Comfortaa", 50, "bold"), text_color=self.textCol)
         title.pack(pady=40)
-
-        controlsScrollContainer = ctk.CTkScrollableFrame(self.controlsFrame, fg_color=self.bodyBg, label_text="")
-        controlsScrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
-        controlsScrollContainer.bind_all("<Button-4>", lambda e: controlsScrollContainer._parent_canvas.yview_scroll(-1, "units"))
-        controlsScrollContainer.bind_all("<Button-5>", lambda e: controlsScrollContainer._parent_canvas.yview_scroll(1, "units"))
-        controlsScrollContainer.bind_all("<MouseWheel>", lambda e: controlsScrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+    
+        self.controlsScrollContainer = ctk.CTkScrollableFrame(self.controlsFrame, fg_color=self.bodyBg, label_text="")
+        self.controlsScrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
+        self.controlsScrollContainer.bind("<Down>", lambda e: self.controlsScrollContainer._parent_canvas.yview_scroll(-1, "units"))
+        self.controlsScrollContainer.bind("<Up>", lambda e: self.controlsScrollContainer._parent_canvas.yview_scroll(1, "units"))
+        self.controlsScrollContainer.bind("<MouseWheel>", lambda e: self.controlsScrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
 
         controlsData = [
             ("Ac", "Clear all", "ESC"),
@@ -148,7 +174,7 @@ class Calculator:
             ("+/-", "Negative/Positive", ";")
         ]
         for btnText, keybind, descText in controlsData:
-            row = ctk.CTkFrame(controlsScrollContainer, fg_color="transparent")
+            row = ctk.CTkFrame(self.controlsScrollContainer, fg_color="transparent")
             row.pack(fill="x", pady=5)
 
             item = ctk.CTkButton(row, text=btnText, width=70, height=40, corner_radius=15,fg_color=self.btnGreen, text_color=self.textCol,font=("Comfortaa", 16, "bold"))
@@ -164,14 +190,18 @@ class Calculator:
         btnBack.pack(pady=30, padx=50, fill="x")
 
     def createTipsWidgets(self):
+        """
+        @brief Shows the tips&tricks page with some guides
+        @bug Auto gestures scroll
+        """
         title = ctk.CTkLabel(self.tipsFrame, text="Tips&Tricks", font=("Comfortaa", 50, "bold"))
         title.pack(pady=40)
         
-        tipsScrollContainer = ctk.CTkScrollableFrame(self.tipsFrame, fg_color=self.bodyBg, label_text="")
-        tipsScrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
-        tipsScrollContainer.bind_all("<Button-4>", lambda e: tipsScrollContainer._parent_canvas.yview_scroll(-1, "units"))
-        tipsScrollContainer.bind_all("<Button-5>", lambda e: tipsScrollContainer._parent_canvas.yview_scroll(1, "units"))
-        tipsScrollContainer.bind_all("<MouseWheel>", lambda e: tipsScrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        self.tipsScrollContainer = ctk.CTkScrollableFrame(self.tipsFrame, fg_color=self.bodyBg, label_text="")
+        self.tipsScrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
+        self.tipsScrollContainer.bind("<Down>", lambda e: self.tipsScrollContainer._parent_canvas.yview_scroll(-1, "units"))
+        self.tipsScrollContainer.bind("<Up>", lambda e: self.tipsScrollContainer._parent_canvas.yview_scroll(1, "units"))
+        self.tipsScrollContainer.bind("<MouseWheel>", lambda e: self.tipsScrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
         
         tips = [
             ("💡 Shifting", "Hold SHIFT to access inverse functions like Asin, Acos, or Atg. The button labels will update automatically."),
@@ -180,7 +210,7 @@ class Calculator:
             ("💡 Shortcuts", "Use your keyboard for speed! 'S' for Sin, 'Q' for Square Root, or 'W' for Powers. ESC clears everything.")
         ]
         for tipTitle, tipText in tips:
-            card = ctk.CTkFrame(tipsScrollContainer, fg_color=self.btnGreen, corner_radius=15)
+            card = ctk.CTkFrame(self.tipsScrollContainer, fg_color=self.btnGreen, corner_radius=15)
             card.pack(fill="x", pady=10, padx=5)
             
             ctk.CTkLabel(card, text=tipTitle, font=("Comfortaa", 18, "bold"),  text_color="white", anchor="w").pack(fill="x", padx=15, pady=(10, 0))
@@ -189,23 +219,66 @@ class Calculator:
         btnBack = ctk.CTkButton(self.tipsFrame, text="Back", fg_color="transparent",border_width=2,border_color=self.btnGreen,height=50,corner_radius=25, hover_color=self.hoverBtnGreen, font=("Comfortaa", 24),command=self.showMenu)
         btnBack.pack(pady=30, padx=50, fill="x")
 
+    def updateHistoryDisplay(self):
+        """
+        @brief Clears and reloads history records into the UI historyScrollContainer
+        """
+        for widget in self.historyScrollContainer.winfo_children():
+            widget.destroy()
+
+        self.loadHistoryFromFile()
+
+        if not self.history:
+            ctk.CTkLabel(self.historyScrollContainer, text="No history yet...", font=("Comfortaa", 14), text_color=self.btnBg3).pack(pady=20)
+        
+        for item in reversed(self.history):
+            card = ctk.CTkFrame(self.historyScrollContainer, fg_color=self.displayBg, corner_radius=10)
+            card.pack(fill="x", pady=5, padx=5)
+            
+            ctk.CTkLabel(card, text=item, font=("Comfortaa", 16), text_color=self.textCol, padx=10, pady=10).pack(side="left")
+
     def createHistoryWidgets(self):
+        """
+        @brief Creates the history page
+        @bug Auto gestures scroll
+        """
         title = ctk.CTkLabel(self.historyFrame, text="History", font=("Comfortaa", 50, "bold"))
         title.pack(pady=40)
         
-        historyScrollContainer = ctk.CTkScrollableFrame(self.historyFrame, fg_color=self.bodyBg, label_text="")
-        historyScrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
-        historyScrollContainer.bind_all("<Button-4>", lambda e: historyScrollContainer._parent_canvas.yview_scroll(-1, "units"))
-        historyScrollContainer.bind_all("<Button-5>", lambda e: historyScrollContainer._parent_canvas.yview_scroll(1, "units"))
-        historyScrollContainer.bind_all("<MouseWheel>", lambda e: historyScrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        self.historyScrollContainer = ctk.CTkScrollableFrame(self.historyFrame, fg_color=self.bodyBg, label_text="")
+        self.historyScrollContainer.pack(expand=True, fill="both", padx=20, pady=10)
+        self.historyScrollContainer.bind("<MouseWheel>", lambda e: self.historyScrollContainer._parent_canvas.yview_scroll(int(-1*(e.delta/120)), "units"))
+        self.historyScrollContainer.bind("<Down>", lambda e: self.historyScrollContainer._parent_canvas.yview_scroll(-1, "units"))
+        self.historyScrollContainer.bind("<Up>", lambda e: self.historyScrollContainer._parent_canvas.yview_scroll(1, "units"))
         
         btnBack = ctk.CTkButton(self.historyFrame, text="Back", fg_color="transparent",border_width=2,border_color=self.btnGreen,height=50,corner_radius=25, hover_color=self.hoverBtnGreen, font=("Comfortaa", 24),command=self.showCalculator)
         btnBack.pack(pady=30, padx=50, fill="x")
 
+    def saveToHistoryFile(self, entry):
+        """
+        @brief Appends a calculation record to the history.txt file
+        @param entry String with the expression and result
+        """
+        try:
+            with open("history.txt", "a", encoding="utf-8") as f:
+                f.write(f"{entry}\n")
+        except Exception as e:
+            print(f"Error saving history: {e}")
+
+    def loadHistoryFromFile(self):
+        """
+        @brief Reads all records from history.txt into the local history list
+        """
+        try:
+            with open("history.txt", "r", encoding="utf-8") as f:
+                self.history = [line.strip() for line in f.readlines() if line.strip()]
+        except FileNotFoundError:
+            self.history = [] 
+
     def createCalculatorWidgets(self):
         """
-        @brief Creates and packs all UI widgets.
-        @details Defines the display area, top navigation buttons, and the main grid of calculator buttons.
+        @brief Creates all UI widgets of calculator
+        @details Defines the display, top buttons, and the main calculator buttons
         """
         # Display
         self.label = ctk.CTkLabel(self.mainFrame, textvariable=self.displayVar, fg_color=self.displayBg, text_color=self.textCol, corner_radius=20, font=("Comfortaa", 40),anchor="se", padx=20, pady=20, height=180)        
@@ -255,8 +328,8 @@ class Calculator:
 
     def setupKeybinds(self):
         """
-        @brief Binds physical keyboard keys to calculator functions.
-        @details Maps numbers, Numpad keys, and basic mathematical operators to the onClick method.
+        @brief Binds keyboard keys to calculator functions
+        @details Maps keystrokes, numpad keys, and other operators to the onClick method
         """
         # Nums
         for i in range(10): 
@@ -310,8 +383,10 @@ class Calculator:
         self.root.bind("<KeyRelease-Shift_R>", self.shiftOff)
 
     def shiftOn(self, event=None):
+        """
+        @brief Activates Shift mode and updates sin,cos,tg button labels to asin,acos,atg
+        """
         self.shiftActive = True
-        print("shift")
         if "Shift" in self.shiftedBtns:
             self.shiftedBtns["Shift"].configure(fg_color=self.hoverBtnBg2)
         self.shiftedBtns["Sin"].configure(text="Asin")
@@ -319,8 +394,10 @@ class Calculator:
         self.shiftedBtns["Tg"].configure(text="Atg")
 
     def shiftOff(self, event=None):
+        """
+        @brief Deactivates Shift mode and restores labels from asin,acos,atg button back to sin,cos,tg
+        """
         self.shiftActive = False
-        print("shift")
         if "Shift" in self.shiftedBtns:
             self.shiftedBtns["Shift"].configure(fg_color=self.btnBg2)
         self.shiftedBtns["Sin"].configure(text="Sin")
@@ -330,9 +407,9 @@ class Calculator:
 
     def onClick(self, char):
         """
-        @brief Handles button click and keypress events.
-        @details Manages the expression string, performs calculations using math_lib (ml), and updates the display. Handles errors gracefully.
-        @param char The character or command string from the pressed button or key.
+        @brief Handles button click and keypress events
+        @details Manages the expression string, performs calculations using math_lib (ml), and updates the display
+        @param char The character or command string from the pressed button or key
         """
         if char == "Ac": 
             self.expression = ""
@@ -347,6 +424,7 @@ class Calculator:
         elif char == "Enter":
             try:
                 # comma replacing
+                exprHistory = self.expression
                 expr = self.expression.replace(',', '.')
                 
                 # Binary operations - lazy
@@ -386,7 +464,12 @@ class Calculator:
                 if result is not None:
                     if isinstance(result, float):
                         result = round(result, 5)
+
                     self.expression = str(result).replace('.', ',')
+                    # Saving to history.txt
+                    history_entry = f"{exprHistory} = {self.expression}"
+                    self.saveToHistoryFile(history_entry)
+
             except Exception as e:
                 print(f"Error: {e}") 
                 self.expression = (f"Error: {e}")
