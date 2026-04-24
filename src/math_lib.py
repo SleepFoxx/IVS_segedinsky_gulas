@@ -23,10 +23,7 @@ def add(a: int | float, b: int | float) -> int | float:
     @param b Second number
     @return The sum of a and b
     """
-    try:
-        a = float(a)
-        b = float(b)
-    except (ValueError, TypeError):
+    if not type(a) in (int, float) or not type(b) in (int, float):
         raise TypeError("Both a and b must be numbers")
     return a + b
 
