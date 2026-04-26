@@ -1,5 +1,5 @@
 """
-@file test_math_lib.py
+@file math_test.py
 @author Ronnie Rybarik (xrybarr00)
 @brief Unit tests for the math_lib library.
 @details This file contains unit tests for all functions in math_lib.py. Tests cover standard inputs, edge cases (zero, negative numbers, floats), invalid value inputs (ValueError, ZeroDivisionError) and invalid type inputs (TypeError). All trigonometric functions expect and return values in degrees.

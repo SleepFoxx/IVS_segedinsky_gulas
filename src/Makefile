@@ -1,4 +1,4 @@
-.PHONY: all pack clean test doc run stddev help req
+.PHONY: all pack clean test doc run stddev help req app
 
 VENV = venv
 PYTHON = $(VENV)/bin/python
@@ -29,14 +29,26 @@ clean:
 	rm -rf __pycache__ *.pyc $(VENV) requirements.txt dist build *.spec docs/_build
 	rm -f $(ZIP_FILE)
 
+
 test: all
 	$(PYTHON) -m unittest math_test.py
+
 
 run: all
 	$(PYTHON) calc.py
 
+
+stddev: all
+	$(PYTHON) stddev.py
+
+
 app: all
 	$(PYTHON) -m PyInstaller --onefile --noconsole calc.py
+
+
+doc:
+	doxygen Doxyfile
+
 
 help:
 	@echo "How to build and run the project:"
