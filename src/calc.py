@@ -626,7 +626,7 @@ class Calculator:
                 if result is not None:
                     result = checkIntOrFloat(result)                        
                     if isinstance(result, float):
-                        result = round(result, 3)
+                        result = round(result, 5)
                     self.expression = str(result).replace('.', ',')
                     self.waitingOpereation = None                           
                     self.waitingValue = None
@@ -676,7 +676,7 @@ class Calculator:
                 if instantResult is not None:
                     instantResult = checkIntOrFloat(instantResult)
                     if isinstance(instantResult, float):
-                        instantResult = round(instantResult, 3)
+                        instantResult = round(instantResult, 5)
                     self.expression = str(instantResult).replace('.', ',')
                     self.updateDisplay(self.expression)
                     self.saveToHistoryFile(f"{char}({exprHistory}) = {self.expression}")
@@ -688,7 +688,7 @@ class Calculator:
             return
 
         if char == "π":
-            self.expression += str(round(ml.pi, 3)).replace('.', ',')
+            self.expression += str(round(ml.pi, 5)).replace('.', ',')
             self.updateDisplay(self.expression)
             return
 
