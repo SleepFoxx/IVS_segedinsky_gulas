@@ -1,10 +1,13 @@
-.PHONY: all pack clean test doc run stddev help req app
+.PHONY: all pack clean test doc run stddev help req 
 
 VENV = venv
 PYTHON = $(VENV)/bin/python
 PIP = $(VENV)/bin/pip
-ZIP_FILE = xhulinj00_xrybarr00_xrzeszm00_xvercim00.zip
 
+ZIP_FILE = xhulinj00_xrybarr00_xrzeszm00_xvercim00.zip
+TESTS_FILE = math_test.py
+CALCULATOR = calc.py
+STDDEV = stddev.py
 
 all: $(VENV)
 
@@ -27,24 +30,18 @@ pack: clean req
 
 clean:
 	rm -rf __pycache__ *.pyc $(VENV) requirements.txt dist build *.spec docs/_build
-	rm -f $(ZIP_FILE)
+	rm -f ../$(ZIP_FILE)
 
 
 test: all
-	$(PYTHON) -m unittest math_test.py
-
+	$(PYTHON) -m unittest $(TESTS_FILE)
 
 run: all
-	$(PYTHON) calc.py
+	$(PYTHON) $(CALCULATOR)
 
 
 stddev: all
-	$(PYTHON) stddev.py
-
-
-app: all
-	$(PYTHON) -m PyInstaller --onefile --noconsole calc.py
-
+	$(PYTHON) $(STDDEV)
 
 doc:
 	doxygen Doxyfile
@@ -56,7 +53,7 @@ help:
 	@echo "  2. Setup environment:          make all"
 	@echo "  3. Run application:            make run"
 	@echo "  4. Run math tests:             make test"
-	@echo "  5. Run profiling (stddev):     make stddev"
+	@echo "  5. Run profiling (stddev):     make stddev < data_file (data_10.txt, data_1000.txt, data_10000000.txt)"
 	@echo "  6. Generate documentation:     make doc"
 	@echo "  7. Create submission zip:      make pack"
 	@echo "  8. Cleanup:                    make clean"
