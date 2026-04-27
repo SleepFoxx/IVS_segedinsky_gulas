@@ -1,0 +1,5 @@
+Rozdelenie úloh
+	xhulinj00 (Vedúci): Matematická knižnica, profiling,  koordinácia tímu, code review.
+	xrybarr00: Makefile, implementácia unit testov, návrh časového plánu, hosťovanie priestorov na stretnutia.
+	xrzeszm00: Integrácia matematickej knižnice, návrh a implementácia GUI, Mockup ďalšej verzie.
+	xvercim00: Inštalátor/odinštalátor, používateľská príručka, správa dokumentácie.
