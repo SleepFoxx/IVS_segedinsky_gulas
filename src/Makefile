@@ -25,7 +25,7 @@ req:
 
 
 pack: clean req
-	cd .. && zip -r $(ZIP_FILE) . -x "*.git*"
+	cd .. && zip -r $(ZIP_FILE) . -x "*__pycache__*" -x "*.DS_Store*"
 
 
 clean:
