@@ -44,14 +44,14 @@ akejkoľvek záruky, dokonca aj bez predpokladanej záruky predajnosti
 alebo vhodnosti pre daný účel. Podrobnosti nájdete v licencii GNU
 General Public License.
 
-POUŽITÉ KNIŽNICE (CustomTkinter):
+Použité knižnice (CustomTkinter):
 ---------------------------------
 Tento projekt využíva pre grafické používateľské rozhranie knižnicu 
 CustomTkinter, ktorá je licencovaná pod MIT licenciou.
 
 - Zdrojový kód CustomTkinter je dostupný na https://github.com/TomSchimansky/CustomTkinter
 
-LICENČNÉ TEXTY:
+Celé znenie licencií:
 ---------------
 Úplné znenie licencií nájdete na adrese:
 - GNU General Public License v3: https://www.gnu.org/licenses/gpl-3.0
