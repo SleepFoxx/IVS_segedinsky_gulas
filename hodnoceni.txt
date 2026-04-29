@@ -1,4 +1,4 @@
-xhulinj00
-xrybarr00
-xrzeszm00
-xvercim00
+xhulinj00 100
+xrybarr00 100
+xrzeszm00 100
+xvercim00 100
